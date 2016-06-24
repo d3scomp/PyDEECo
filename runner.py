@@ -12,7 +12,7 @@ c0 = Component()
 c1 = Component()
 c2 = Component()
 
-sim = Sim()
+sim = Sim(snapshot_dir = "logs")
 sim.addcomponent(c0)
 sim.addcomponent(c1)
 sim.addcomponent(c2)
