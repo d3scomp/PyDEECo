@@ -28,6 +28,8 @@ def load(logDir):
 		log.append(sim)
 	# log[root.time] = root
 
+	log.sort(key=lambda x: x.time)
+
 	print("Loading logs...done")
 
 	# return Logs(log, loadFinal(logDir))
