@@ -49,7 +49,12 @@ class PlottingCanvas(FigureCanvas):
 			self.plotComponent(component.knowledge)
 
 	def plotComponent(self, knowledge):
-		self.plot.plot(knowledge.position.x, knowledge.position.y, "g^")
+		if knowledge.color == "red":
+			self.plot.plot(knowledge.position.x, knowledge.position.y, "r^")
+		elif knowledge.color == "green":
+			self.plot.plot(knowledge.position.x, knowledge.position.y, "g^")
+		elif knowledge.color == "blue":
+			self.plot.plot(knowledge.position.x, knowledge.position.y, "b^")
 
 	def updatePlot(self, recNum):
 		self.drawPlot(recNum)
