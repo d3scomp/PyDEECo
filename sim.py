@@ -1,7 +1,6 @@
-from node import Node
-
 import jsonpickle as json
 import os
+
 
 class Sim:
 	def __init__(self, snapshot_dir = None):
@@ -15,7 +14,7 @@ class Sim:
 			except FileExistsError as e:
 				pass
 
-	def add_node(self, node: Node):
+	def add_node(self, node):
 		self.nodes.append(node)
 
 	def run(self, limit: int):
@@ -27,7 +26,7 @@ class Sim:
 				node.sim_step(time)
 
 			# Snapshot the system
-			if(not self.snapshot_dir is None):
+			if self.snapshot_dir is not None:
 				log = open(self.snapshot_dir + os.sep + str(time) + ".json", "w")
 				dump = json.encode(self)
 				log.write(dump)

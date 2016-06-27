@@ -1,6 +1,8 @@
 import random
 import math
 
+from node import Node
+
 
 class Knowledge:
 	pass
@@ -57,7 +59,10 @@ class Component:
 		Component.counter += 1
 		return id
 
-	def __init__(self):
+	def __init__(self, node: Node):
+		node.add_component(self)
+
+		self.node = node
 		self.knowledge = Knowledge()
 		self.metadata = Metadata()
 
