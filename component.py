@@ -1,6 +1,11 @@
 import random
 import math
 
+
+class Knowledge:
+	pass
+
+
 class Position:
 	EQ_THRESHOLD = 0.000001
 
@@ -37,6 +42,7 @@ class Position:
 class Component:
 	counter = 0
 	SPEED = 0.01
+	COLORS = ["red", "blue", "green"]
 	random = random.Random(0)
 
 	@staticmethod
@@ -46,19 +52,20 @@ class Component:
 		return id
 
 	def __init__(self):
-		self.id = Component.genid()
+		self.knowledge = Knowledge()
+		self.knowledge.id = Component.genid()
+		self.knowledge.position = self.gen_position()
+		self.knowledge.goal = self.gen_position()
+		self.knowledge.time = None
+		self.knowledge.color = Component.random.choice(Component.COLORS)
 
-		self.position = self.gen_position()
-		self.goal = self.gen_position()
-		self.time = None
-
-		print("Component " + str(self.id) + " created")
+		print("Component " + str(self.knowledge.id) + " created")
 
 	def gen_position(self):
 		return Position(self.random.uniform(0, 1), self.random.uniform(0, 1))
 
 	def sim_step(self, time):
-		self.time = time
+		self.knowledge.time = time
 
 		# Run "processes"
 		self.move()
@@ -66,17 +73,18 @@ class Component:
 		self.status()
 
 	def status(self):
-		print(str(self.time) + " ms: " + str(self.id) + " at " + str(self.position) + " goal " + str(self.goal) + " dist: " + str(self.position.dist_to(self.goal)))
+		knowledge = self.knowledge
+		print(str(knowledge.time) + " ms: " + str(knowledge.id) + " at " + str(knowledge.position) + " goal " + str(knowledge.goal) + " dist: " + str(knowledge.position.dist_to(knowledge.goal)))
 
 	def move(self):
-		if self.position.dist_to(self.goal) < Component.SPEED:
-			self.position = self.goal
+		if self.knowledge.position.dist_to(self.knowledge.goal) < Component.SPEED:
+			self.knowledge.position = self.knowledge.goal
 		else:
-			vect = self.goal - self.position
+			vect = self.knowledge.goal - self.knowledge.position
 			vect /= vect.length()
 			vect *= Component.SPEED
-			self.position += vect
+			self.knowledge.position += vect
 
 	def set_goal(self):
-		if self.position == self.goal:
-			self.goal = self.gen_position()
+		if self.knowledge.position == self.knowledge.goal:
+			self.knowledge.goal = self.gen_position()

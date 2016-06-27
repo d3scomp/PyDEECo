@@ -46,9 +46,10 @@ class PlottingCanvas(FigureCanvas):
 
 	def plotRecord(self, rec):
 		for component in rec.components:
-			self.plot.plot(component.position.x, component.position.y, "g^")
+			self.plotComponent(component.knowledge)
 
-
+	def plotComponent(self, knowledge):
+		self.plot.plot(knowledge.position.x, knowledge.position.y, "g^")
 
 	def updatePlot(self, recNum):
 		self.drawPlot(recNum)
