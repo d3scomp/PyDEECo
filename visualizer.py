@@ -30,7 +30,7 @@ class PlottingCanvas(FigureCanvas):
 		self.log = logs.log
 		self.final = logs.final
 
-		self.drawPlot(0)
+		self.draw_plot(0)
 
 		FigureCanvas.__init__(self, self.fig)
 		self.setParent(parent)
@@ -38,8 +38,8 @@ class PlottingCanvas(FigureCanvas):
 		FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
 		FigureCanvas.updateGeometry(self)
 
-	def drawPlot(self, recNum):
-		rec = self.log[recNum]
+	def draw_plot(self, rec_num):
+		rec = self.log[rec_num]
 
 		self.plot.clear()
 		self.plot_record(rec)
@@ -52,7 +52,7 @@ class PlottingCanvas(FigureCanvas):
 		for node in rec.nodes:
 			self.plot_node(node)
 
-	def plot_node(self, node:Node):
+	def plot_node(self, node: Node):
 		for component in node.components:
 			self.plot_component(component.knowledge)
 
@@ -65,7 +65,7 @@ class PlottingCanvas(FigureCanvas):
 			self.plot.plot(knowledge.position.x, knowledge.position.y, "b^")
 
 	def update_plot(self, recNum):
-		self.drawPlot(recNum)
+		self.draw_plot(recNum)
 		self.draw()
 
 
