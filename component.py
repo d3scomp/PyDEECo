@@ -6,6 +6,12 @@ class Knowledge:
 	pass
 
 
+class Metadata:
+	def __init__(self):
+		self.coordinatedBy = None
+		self.coordinating = None
+
+
 class Position:
 	EQ_THRESHOLD = 0.000001
 
@@ -53,6 +59,8 @@ class Component:
 
 	def __init__(self):
 		self.knowledge = Knowledge()
+		self.metadata = Metadata()
+
 		self.knowledge.id = Component.genid()
 		self.knowledge.position = self.gen_position()
 		self.knowledge.goal = self.gen_position()
