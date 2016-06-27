@@ -80,10 +80,10 @@ class Component:
 		if self.knowledge.position.dist_to(self.knowledge.goal) < Component.SPEED:
 			self.knowledge.position = self.knowledge.goal
 		else:
-			vect = self.knowledge.goal - self.knowledge.position
-			vect /= vect.length()
-			vect *= Component.SPEED
-			self.knowledge.position += vect
+			vector = self.knowledge.goal - self.knowledge.position
+			vector /= vector.length()
+			vector *= Component.SPEED
+			self.knowledge.position += vector
 
 	def set_goal(self):
 		if self.knowledge.position == self.knowledge.goal:
