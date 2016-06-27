@@ -15,6 +15,10 @@ from PyQt5.QtWidgets import *
 import sys
 
 import simloader
+from node import Node
+from component import Component
+from component import Knowledge
+from sim import Sim
 
 colors = ["red", "green", "blue", "yellow", "black", "lime", "cyan", "orange", "orange", "orange", "orange"]
 
@@ -38,17 +42,21 @@ class PlottingCanvas(FigureCanvas):
 		rec = self.log[recNum]
 
 		self.plot.clear()
-		self.plotRecord(rec)
+		self.plot_record(rec)
 
 		self.plot.set_title("Time: " + str(rec.time) + " ms")
 		self.plot.set_xlim(0, 1)
 		self.plot.set_ylim(0, 1)
 
-	def plotRecord(self, rec):
-		for component in rec.components:
-			self.plotComponent(component.knowledge)
+	def plot_record(self, rec: Sim):
+		for node in rec.nodes:
+			self.plot_node(node)
 
-	def plotComponent(self, knowledge):
+	def plot_node(self, node:Node):
+		for component in node.components:
+			self.plot_component(component.knowledge)
+
+	def plot_component(self, knowledge: Knowledge):
 		if knowledge.color == "red":
 			self.plot.plot(knowledge.position.x, knowledge.position.y, "r^")
 		elif knowledge.color == "green":
@@ -56,7 +64,7 @@ class PlottingCanvas(FigureCanvas):
 		elif knowledge.color == "blue":
 			self.plot.plot(knowledge.position.x, knowledge.position.y, "b^")
 
-	def updatePlot(self, recNum):
+	def update_plot(self, recNum):
 		self.drawPlot(recNum)
 		self.draw()
 
@@ -73,7 +81,7 @@ class Visualizer(QWidget):
 		vbox.addWidget(slider)
 		self.setLayout(vbox)
 
-		slider.valueChanged.connect(drawing.updatePlot)
+		slider.valueChanged.connect(drawing.update_plot)
 		slider.setMinimum(0)
 		slider.setMaximum(len(logs.log) - 1)
 

@@ -1,29 +1,30 @@
-from component import Component
+from node import Node
+
 import jsonpickle as json
 import os
 
 class Sim:
 	def __init__(self, snapshot_dir = None):
-		self.components = []
+		self.nodes = []
 		self.snapshot_dir = snapshot_dir
 		self.time = 0
 
-		if not snapshot_dir is None:
+		if snapshot_dir is not None:
 			try:
 				os.mkdir(self.snapshot_dir)
-			except:
+			except FileExistsError as e:
 				pass
 
-	def addcomponent(self, component: Component):
-		self.components.append(component)
+	def add_node(self, node: Node):
+		self.nodes.append(node)
 
 	def run(self, limit: int):
 		for time in range(0, limit):
 			self.time = time
 
-			# Run components
-			for component in self.components:
-				component.sim_step(time)
+			# Run nodes
+			for node in self.nodes:
+				node.sim_step(time)
 
 			# Snapshot the system
 			if(not self.snapshot_dir is None):
