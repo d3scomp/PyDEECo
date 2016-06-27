@@ -68,23 +68,22 @@ class Component:
 		self.knowledge.time = time
 
 		# Run "processes"
-		self.move()
-		self.set_goal()
-		self.status()
+		self.move(self.knowledge)
+		self.set_goal(self.knowledge)
+		self.status(self.knowledge)
 
-	def status(self):
-		knowledge = self.knowledge
+	def status(self, knowledge):
 		print(str(knowledge.time) + " ms: " + str(knowledge.id) + " at " + str(knowledge.position) + " goal " + str(knowledge.goal) + " dist: " + str(knowledge.position.dist_to(knowledge.goal)))
 
-	def move(self):
-		if self.knowledge.position.dist_to(self.knowledge.goal) < Component.SPEED:
-			self.knowledge.position = self.knowledge.goal
+	def move(self, knowledge):
+		if knowledge.position.dist_to(knowledge.goal) < Component.SPEED:
+			knowledge.position = knowledge.goal
 		else:
-			vector = self.knowledge.goal - self.knowledge.position
+			vector = knowledge.goal - knowledge.position
 			vector /= vector.length()
 			vector *= Component.SPEED
-			self.knowledge.position += vector
+			knowledge.position += vector
 
-	def set_goal(self):
-		if self.knowledge.position == self.knowledge.goal:
-			self.knowledge.goal = self.gen_position()
+	def set_goal(self, knowledge):
+		if knowledge.position == knowledge.goal:
+			knowledge.goal = self.gen_position()
