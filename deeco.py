@@ -3,6 +3,7 @@ import math
 
 from runnable import Runnable
 from sim import Sim
+from sim import Scheduler
 
 
 class Node(Runnable):
@@ -20,10 +21,9 @@ class Node(Runnable):
 	def add_component(self, component):
 		self.components.append(component)
 
-	def do_step(self, time):
-		# Run components
+	def run(self, scheduler: Scheduler):
 		for component in self.components:
-			component.do_step(time)
+			component.run(scheduler)
 
 
 class Knowledge:
@@ -60,10 +60,11 @@ class Component(Runnable):
 
 		self.id = self.gen_id()
 
-	def do_step(self, time):
-		self.time = time
+	def process_factory(self, entry):
+		return lambda time_ms: entry(self, self.knowledge)
 
-		# Run "processes"
+	def run(self, scheduler):
 		for entry in type(self).__dict__.values():
 			if hasattr(entry, "is_process"):
-				entry(self, self.knowledge)
+				method = self.process_factory(entry)
+				scheduler.set_periodic_timer(method, 1000)

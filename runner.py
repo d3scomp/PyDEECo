@@ -11,9 +11,9 @@ print("Running simulation")
 
 sim = Sim(snapshot_dir="logs")
 
-# Add 50 nodes hosting one component each
-for i in range(0, 50):
+# Add X nodes hosting one component each
+for i in range(0, 5):
 	node = Node(sim)
 	Robot(node)
 
-sim.run(100)
+sim.run(60000)

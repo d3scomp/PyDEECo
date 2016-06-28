@@ -1,3 +1,4 @@
 class Runnable:
-	def do_step(self, time_ms):
+	def run(self, scheduler):
 		pass
+

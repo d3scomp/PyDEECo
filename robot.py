@@ -30,7 +30,7 @@ class Robot(Component):
 
 	@process
 	def update_time(self, knowledge: Knowledge):
-		knowledge.time = self.time
+		knowledge.time = self.node.runtime.scheduler.get_time_ms()
 
 	@process
 	def status(self, knowledge):
