@@ -36,44 +36,13 @@ class Metadata:
 		self.coordinating = None
 
 
-class Position:
-	EQ_THRESHOLD = 0.000001
-
-	def __init__(self, x: float, y: float):
-		self.x = x
-		self.y = y
-
-	def __str__(self):
-		return str.format("[{0:f}, {1:f}]", self.x, self.y)
-
-	def __eq__(self, other):
-		return self.dist_to(other) < Position.EQ_THRESHOLD
-
-	def __sub__(self, other):
-		return Position(self.x - other.x, self.y - other.y)
-
-	def __truediv__(self, scalar: float):
-		"""Position(x1/x2, y1/y2)"""
-		return Position(self.x / scalar, self.y / scalar)
-
-	def __mul__(self, other):
-		return Position(self.x * other, self.y * other)
-
-	def __add__(self, other):
-		return Position(self.x + other.x, self.y + other.y)
-
-	def dist_to(self, other):
-		return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
-
-	def length(self):
-		return math.sqrt(self.x**2 + self.y**2)
+def process(method):
+		method.is_process = True
+		return method
 
 
 class Component(Runnable):
 	counter = 0
-	SPEED = 0.01
-	COLORS = ["red", "blue", "green"]
-	random = random.Random(0)
 
 	@staticmethod
 	def genid():
@@ -90,19 +59,6 @@ class Component(Runnable):
 		self.metadata = Metadata()
 
 		self.knowledge.id = Component.genid()
-		self.knowledge.position = self.gen_position()
-		self.knowledge.goal = self.gen_position()
-		self.knowledge.time = None
-		self.knowledge.color = Component.random.choice(Component.COLORS)
-
-		print("Component " + str(self.knowledge.id) + " created")
-
-	def process(process):
-		process.is_process = True
-		return process
-
-	def gen_position(self):
-		return Position(self.random.uniform(0, 1), self.random.uniform(0, 1))
 
 	def do_step(self, time):
 		self.time = time
@@ -111,26 +67,3 @@ class Component(Runnable):
 		for entry in type(self).__dict__.values():
 			if hasattr(entry, "is_process"):
 				entry(self, self.knowledge)
-
-	@process
-	def update_time(self, knowledge):
-		knowledge.time = self.time
-
-	@process
-	def status(self, knowledge):
-		print(str(knowledge.time) + " ms: " + str(knowledge.id) + " at " + str(knowledge.position) + " goal " + str(knowledge.goal) + " dist: " + str(knowledge.position.dist_to(knowledge.goal)))
-
-	@process
-	def move(self, knowledge):
-		if knowledge.position.dist_to(knowledge.goal) < Component.SPEED:
-			knowledge.position = knowledge.goal
-		else:
-			vector = knowledge.goal - knowledge.position
-			vector /= vector.length()
-			vector *= Component.SPEED
-			knowledge.position += vector
-
-	@process
-	def set_goal(self, knowledge):
-		if knowledge.position == knowledge.goal:
-			knowledge.goal = self.gen_position()
