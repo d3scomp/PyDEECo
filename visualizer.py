@@ -15,9 +15,8 @@ from PyQt5.QtWidgets import *
 import sys
 
 import simloader
-from node import Node
-from component import Component
-from component import Knowledge
+from deeco import Component
+from deeco import Knowledge
 from sim import Sim
 
 colors = ["red", "green", "blue", "yellow", "black", "lime", "cyan", "orange", "orange", "orange", "orange"]
@@ -49,7 +48,7 @@ class PlottingCanvas(FigureCanvas):
 		self.plot.set_ylim(0, 1)
 
 	def plot_record(self, rec: Sim):
-		for node in rec.nodes:
+		for node in rec.runnables:
 			self.plot_node(node)
 
 	def plot_node(self, node: Node):

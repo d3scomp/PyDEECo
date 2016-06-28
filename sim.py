@@ -1,10 +1,11 @@
 import jsonpickle as json
 import os
+from runnable import Runnable
 
 
 class Sim:
 	def __init__(self, snapshot_dir = None):
-		self.nodes = []
+		self.runnables = []
 		self.snapshot_dir = snapshot_dir
 		self.time = 0
 
@@ -14,16 +15,16 @@ class Sim:
 			except FileExistsError as e:
 				pass
 
-	def add_node(self, node):
-		self.nodes.append(node)
+	def add_runnable(self, runnable: Runnable):
+		self.runnables.append(runnable)
 
 	def run(self, limit: int):
 		for time in range(0, limit):
 			self.time = time
 
 			# Run nodes
-			for node in self.nodes:
-				node.sim_step(time)
+			for node in self.runnables:
+				node.do_step(time)
 
 			# Snapshot the system
 			if self.snapshot_dir is not None:

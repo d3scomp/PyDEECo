@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import sys
 
 from sim import Sim
-from component import Component
-from node import Node
+from deeco import Component
+from deeco import Node
 
 print("Running simulation")
 

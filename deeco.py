@@ -1,7 +1,29 @@
 import random
 import math
 
-from node import Node
+from runnable import Runnable
+from sim import Sim
+
+
+class Node(Runnable):
+	counter = 0
+
+	def __init__(self, runtime: Sim):
+		runtime.add_runnable(self)
+
+		self.runtime = runtime
+		self.id = Node.counter
+		Node.counter += 1
+
+		self.components = []
+
+	def add_component(self, component):
+		self.components.append(component)
+
+	def do_step(self, time):
+		# Run components
+		for component in self.components:
+			component.do_step(time)
 
 
 class Knowledge:
@@ -47,7 +69,7 @@ class Position:
 		return math.sqrt(self.x**2 + self.y**2)
 
 
-class Component:
+class Component(Runnable):
 	counter = 0
 	SPEED = 0.01
 	COLORS = ["red", "blue", "green"]
@@ -77,7 +99,7 @@ class Component:
 	def gen_position(self):
 		return Position(self.random.uniform(0, 1), self.random.uniform(0, 1))
 
-	def sim_step(self, time):
+	def do_step(self, time):
 		self.knowledge.time = time
 
 		# Run "processes"
