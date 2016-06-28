@@ -84,6 +84,7 @@ class Component(Runnable):
 	def __init__(self, node: Node):
 		node.add_component(self)
 
+		self.time = None
 		self.node = node
 		self.knowledge = Knowledge()
 		self.metadata = Metadata()
@@ -96,20 +97,30 @@ class Component(Runnable):
 
 		print("Component " + str(self.knowledge.id) + " created")
 
+	def process(process):
+		process.is_process = True
+		return process
+
 	def gen_position(self):
 		return Position(self.random.uniform(0, 1), self.random.uniform(0, 1))
 
 	def do_step(self, time):
-		self.knowledge.time = time
+		self.time = time
 
 		# Run "processes"
-		self.move(self.knowledge)
-		self.set_goal(self.knowledge)
-		self.status(self.knowledge)
+		for entry in type(self).__dict__.values():
+			if hasattr(entry, "is_process"):
+				entry(self, self.knowledge)
 
+	@process
+	def update_time(self, knowledge):
+		knowledge.time = self.time
+
+	@process
 	def status(self, knowledge):
 		print(str(knowledge.time) + " ms: " + str(knowledge.id) + " at " + str(knowledge.position) + " goal " + str(knowledge.goal) + " dist: " + str(knowledge.position.dist_to(knowledge.goal)))
 
+	@process
 	def move(self, knowledge):
 		if knowledge.position.dist_to(knowledge.goal) < Component.SPEED:
 			knowledge.position = knowledge.goal
@@ -119,6 +130,7 @@ class Component(Runnable):
 			vector *= Component.SPEED
 			knowledge.position += vector
 
+	@process
 	def set_goal(self, knowledge):
 		if knowledge.position == knowledge.goal:
 			knowledge.goal = self.gen_position()
