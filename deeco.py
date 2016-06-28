@@ -45,10 +45,10 @@ class Component(Runnable):
 	counter = 0
 
 	@staticmethod
-	def genid():
-		id = Component.counter
+	def gen_id():
+		identifier = Component.counter
 		Component.counter += 1
-		return id
+		return identifier
 
 	def __init__(self, node: Node):
 		node.add_component(self)
@@ -58,7 +58,7 @@ class Component(Runnable):
 		self.knowledge = Knowledge()
 		self.metadata = Metadata()
 
-		self.knowledge.id = Component.genid()
+		self.id = self.gen_id()
 
 	def do_step(self, time):
 		self.time = time

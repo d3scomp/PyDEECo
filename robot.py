@@ -17,6 +17,7 @@ class Robot(Component):
 	def __init__(self, node: Node):
 		super().__init__(node)
 
+		self.knowledge.id = self.id
 		self.knowledge.position = self.gen_position()
 		self.knowledge.goal = self.gen_position()
 		self.knowledge.time = None
