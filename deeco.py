@@ -54,7 +54,7 @@ class TimeStamped(Role):
 		self.time = None
 
 
-class Knowledge(Identifiable, TimeStamped):
+class BaseKnowledge(Identifiable, TimeStamped):
 	def __init__(self):
 		super().__init__()
 
@@ -73,6 +73,9 @@ def process(method):
 class Component(Runnable):
 	counter = 0
 
+	class Knowledge:
+		pass
+
 	@staticmethod
 	def gen_id():
 		identifier = Component.counter
@@ -80,14 +83,14 @@ class Component(Runnable):
 		return identifier
 
 	def __init__(self, node: Node):
+		self.id = self.gen_id()
 		node.add_component(self)
 
 		self.time = None
 		self.node = node
-		self.knowledge = None
+		self.knowledge = self.Knowledge()
+		self.knowledge.id = self.id
 		self.metadata = Metadata()
-
-		self.id = self.gen_id()
 
 	def process_factory(self, entry):
 		return lambda time_ms: entry(self, self.knowledge)

@@ -16,7 +16,7 @@ import sys
 
 import simloader
 from deeco import Component
-from deeco import Knowledge
+from deeco import BaseKnowledge
 from sim import Sim
 
 colors = ["red", "green", "blue", "yellow", "black", "lime", "cyan", "orange", "orange", "orange", "orange"]
@@ -55,7 +55,7 @@ class PlottingCanvas(FigureCanvas):
 		for component in node.components:
 			self.plot_component(component.knowledge)
 
-	def plot_component(self, knowledge: Knowledge):
+	def plot_component(self, knowledge: BaseKnowledge):
 		if knowledge.color == "red":
 			self.plot.plot(knowledge.position.x, knowledge.position.y, "r^")
 		elif knowledge.color == "green":

@@ -101,17 +101,6 @@ class Sim:
 		for node in self.nodes:
 			node.run(self.scheduler)
 
-		# Schedule snapshot execution
-#		self.scheduler.set_periodic_timer(self.snapshot_system, period_ms=1000)
-
 		self.scheduler.run(limit_ms)
 
 		print("All done")
-
-#	def snapshot_system(self, time_ms: int):
-#			# Snapshot the system
-#			if self.snapshot_dir is not None:
-#				log = open(self.snapshot_dir + os.sep + str(time_ms) + ".json", "w")
-#				dump = json.encode(self)
-#				log.write(dump)
-#				log.close()
