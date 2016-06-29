@@ -63,7 +63,7 @@ class Robot(Component):
 		knowledge.time = self.node.runtime.scheduler.get_time_ms()
 
 	@process
-	def status(self, knowledge):
+	def status(self, knowledge: RobotRole):
 		print(str(knowledge.time) + " ms: " + str(knowledge.id) + " at " + str(knowledge.position) + " goal " + str(
 			knowledge.goal) + " dist: " + str(knowledge.position.dist_to(knowledge.goal)))
 
