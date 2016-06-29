@@ -8,19 +8,22 @@ from robot import Robot
 from deeco import Node
 
 from snapshoter import Snapshoter
-from replicas import Replicas
+from identity_replicas import IdentityReplicas
 
 print("Running simulation")
 
 sim = Sim()
 
-# add snapshoter plugin
-Snapshoter(sim)
+# Add snapshoter plugin
+#Snapshoter(sim)
+
+# Add identity replicas plugin (provides replicas using deep copies of original knowledge)
+IdentityReplicas(sim)
 
 # Add X nodes hosting one component each
 for i in range(0, 5):
 	node = Node(sim)
-	Replicas(node)
 	Robot(node)
 
+# Run the simulation
 sim.run(60000)

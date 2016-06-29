@@ -21,7 +21,6 @@ class Node(Runnable):
 
 		self.plugins = []
 		self.components = []
-		self.replicas = []
 
 	def add_component(self, component):
 		self.components.append(component)
