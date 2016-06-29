@@ -74,19 +74,12 @@ class PeriodicTimer(Timer):
 
 
 class Sim:
-	def __init__(self, snapshot_dir=None):
+	def __init__(self):
 		self.scheduler = SimScheduler()
 
 		self.nodes = []
 		self.plugins = []
-		self.snapshot_dir = snapshot_dir
 		self.time = 0
-
-		if snapshot_dir is not None:
-			try:
-				os.mkdir(self.snapshot_dir)
-			except FileExistsError as e:
-				pass
 
 	def add_plugin(self, plugin: SimPlugin):
 		self.plugins.append(plugin)
@@ -109,16 +102,16 @@ class Sim:
 			node.run(self.scheduler)
 
 		# Schedule snapshot execution
-		self.scheduler.set_periodic_timer(self.snapshot_system, period_ms=1000)
+#		self.scheduler.set_periodic_timer(self.snapshot_system, period_ms=1000)
 
 		self.scheduler.run(limit_ms)
 
 		print("All done")
 
-	def snapshot_system(self, time_ms: int):
-			# Snapshot the system
-			if self.snapshot_dir is not None:
-				log = open(self.snapshot_dir + os.sep + str(time_ms) + ".json", "w")
-				dump = json.encode(self)
-				log.write(dump)
-				log.close()
+#	def snapshot_system(self, time_ms: int):
+#			# Snapshot the system
+#			if self.snapshot_dir is not None:
+#				log = open(self.snapshot_dir + os.sep + str(time_ms) + ".json", "w")
+#				dump = json.encode(self)
+#				log.write(dump)
+#				log.close()
