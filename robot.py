@@ -9,18 +9,6 @@ from deeco import process
 from position import Position
 
 
-class Identifiable(Role):
-	def __init__(self):
-		super().__init__()
-		self.id = None
-
-
-class TimeStamped(Role):
-	def __init__(self):
-		super().__init__()
-		self.time = None
-
-
 class Rover(Role):
 	def __init__(self):
 		super().__init__()
@@ -28,15 +16,10 @@ class Rover(Role):
 		self.goal = None
 
 
-class RobotRole(Knowledge, Identifiable, TimeStamped, Rover):
+class RobotRole(Knowledge, Rover):
 	def __init__(self):
 		super().__init__()
 		self.color = None
-
-
-class TimeIdentifiable(Identifiable, TimeStamped):
-	def __init__(self):
-		super.__init__()
 
 
 class Robot(Component):

@@ -9,14 +9,20 @@ from sim import Scheduler
 class Node(Runnable):
 	counter = 0
 
+	@staticmethod
+	def gen_id():
+		identifier = Node.counter
+		Node.counter += 1
+		return identifier
+
 	def __init__(self, runtime: Sim):
 		runtime.add_runnable(self)
 
 		self.runtime = runtime
-		self.id = Node.counter
-		Node.counter += 1
+		self.id = self.gen_id()
 
 		self.components = []
+		self.replicas = []
 
 	def add_component(self, component):
 		self.components.append(component)
@@ -30,8 +36,21 @@ class Role:
 	pass
 
 
-class Knowledge:
-	pass
+class Identifiable(Role):
+	def __init__(self):
+		super().__init__()
+		self.id = None
+
+
+class TimeStamped(Role):
+	def __init__(self):
+		super().__init__()
+		self.time = None
+
+
+class Knowledge(Identifiable, TimeStamped):
+	def __init__(self):
+		super().__init__()
 
 
 class Metadata:
@@ -72,3 +91,12 @@ class Component(Runnable):
 			if hasattr(entry, "is_process"):
 				method = self.process_factory(entry)
 				scheduler.set_periodic_timer(method, 1000)
+
+
+class NodePlugin:
+	pass
+
+
+class SimPlugin:
+	def get_node_plugin(self):
+		pass
