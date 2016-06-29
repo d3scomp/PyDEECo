@@ -16,7 +16,8 @@ class Runtime:
 
 class NodePlugin(Runnable):
 	def __init__(self, node):
-		pass
+		self.node = node
+		node.add_plugin(self)
 
 
 class SimPlugin(Runnable):
