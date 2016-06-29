@@ -17,6 +17,7 @@ class Rover(Role):
 		self.goal = None
 
 
+# Component
 class Robot(Component):
 	SPEED = 0.01
 	COLORS = ["red", "blue", "green"]
