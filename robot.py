@@ -2,11 +2,41 @@ from random import Random
 
 from deeco import Node
 from deeco import Component
+from deeco import Role
 from deeco import Knowledge
-from deeco import Metadata
 from deeco import process
 
 from position import Position
+
+
+class Identifiable(Role):
+	def __init__(self):
+		super().__init__()
+		self.id = None
+
+
+class TimeStamped(Role):
+	def __init__(self):
+		super().__init__()
+		self.time = None
+
+
+class Rover(Role):
+	def __init__(self):
+		super().__init__()
+		self.position = None
+		self.goal = None
+
+
+class RobotRole(Knowledge, Identifiable, TimeStamped, Rover):
+	def __init__(self):
+		super().__init__()
+		self.color = None
+
+
+class TimeIdentifiable(Identifiable, TimeStamped):
+	def __init__(self):
+		super.__init__()
 
 
 class Robot(Component):
@@ -17,10 +47,10 @@ class Robot(Component):
 	def __init__(self, node: Node):
 		super().__init__(node)
 
+		self.knowledge = RobotRole()
 		self.knowledge.id = self.id
 		self.knowledge.position = self.gen_position()
 		self.knowledge.goal = self.gen_position()
-		self.knowledge.time = None
 		self.knowledge.color = self.random.choice(self.COLORS)
 
 		print("Robot " + str(self.knowledge.id) + " created")
@@ -29,7 +59,7 @@ class Robot(Component):
 		return Position(self.random.uniform(0, 1), self.random.uniform(0, 1))
 
 	@process
-	def update_time(self, knowledge: Knowledge):
+	def update_time(self, knowledge: RobotRole):
 		knowledge.time = self.node.runtime.scheduler.get_time_ms()
 
 	@process
@@ -38,7 +68,7 @@ class Robot(Component):
 			knowledge.goal) + " dist: " + str(knowledge.position.dist_to(knowledge.goal)))
 
 	@process
-	def move(self, knowledge: Knowledge):
+	def move(self, knowledge: RobotRole):
 		if knowledge.position.dist_to(knowledge.goal) < self.SPEED:
 			knowledge.position = knowledge.goal
 		else:
@@ -48,6 +78,6 @@ class Robot(Component):
 			knowledge.position += vector
 
 	@process
-	def set_goal(self, knowledge: Knowledge):
+	def set_goal(self, knowledge: RobotRole):
 		if knowledge.position == knowledge.goal:
 			knowledge.goal = self.gen_position()

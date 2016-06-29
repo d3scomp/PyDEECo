@@ -92,8 +92,8 @@ class Sim:
 
 	def run(self, limit_ms: int):
 		# Schedule runnable in the system nodes
-		for node in self.runnables:
-			node.run(self.scheduler)
+		for runnable in self.runnables:
+			runnable.run(self.scheduler)
 
 		# Schedule snapshot execution
 		self.scheduler.set_periodic_timer(self.snapshot_system, period_ms=1000)

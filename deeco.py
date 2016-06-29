@@ -26,6 +26,10 @@ class Node(Runnable):
 			component.run(scheduler)
 
 
+class Role:
+	pass
+
+
 class Knowledge:
 	pass
 
@@ -55,7 +59,7 @@ class Component(Runnable):
 
 		self.time = None
 		self.node = node
-		self.knowledge = Knowledge()
+		self.knowledge = None
 		self.metadata = Metadata()
 
 		self.id = self.gen_id()
