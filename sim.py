@@ -3,7 +3,7 @@ import os
 import types
 from queue import PriorityQueue
 
-from runnable import Runnable
+from runnable import *
 
 
 class Timer:
@@ -77,7 +77,8 @@ class Sim:
 	def __init__(self, snapshot_dir=None):
 		self.scheduler = SimScheduler()
 
-		self.runnables = []
+		self.nodes = []
+		self.plugins = []
 		self.snapshot_dir = snapshot_dir
 		self.time = 0
 
@@ -87,13 +88,25 @@ class Sim:
 			except FileExistsError as e:
 				pass
 
-	def add_runnable(self, runnable: Runnable):
-		self.runnables.append(runnable)
+	def add_plugin(self, plugin: SimPlugin):
+		self.plugins.append(plugin)
+
+	def add_node(self, node: Runnable):
+		self.nodes.append(node)
 
 	def run(self, limit_ms: int):
-		# Schedule runnable in the system nodes
-		for runnable in self.runnables:
-			runnable.run(self.scheduler)
+		# Schedule system plugins
+		for plugin in self.plugins:
+			plugin.run(self.scheduler)
+
+		# Deploy system plugins on nodes
+		for plugin in self.plugins:
+			for node in self.nodes:
+				plugin.attach_to(node)
+
+		# Schedule nodes
+		for node in self.nodes:
+			node.run(self.scheduler)
 
 		# Schedule snapshot execution
 		self.scheduler.set_periodic_timer(self.snapshot_system, period_ms=1000)

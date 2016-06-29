@@ -48,7 +48,7 @@ class PlottingCanvas(FigureCanvas):
 		self.plot.set_ylim(0, 1)
 
 	def plot_record(self, rec: Sim):
-		for node in rec.runnables:
+		for node in rec.nodes:
 			self.plot_node(node)
 
 	def plot_node(self, node: Node):

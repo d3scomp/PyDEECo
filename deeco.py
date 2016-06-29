@@ -1,9 +1,7 @@
 import random
 import math
 
-from runnable import Runnable
-from sim import Sim
-from sim import Scheduler
+from runnable import *
 
 
 class Node(Runnable):
@@ -15,19 +13,28 @@ class Node(Runnable):
 		Node.counter += 1
 		return identifier
 
-	def __init__(self, runtime: Sim):
-		runtime.add_runnable(self)
+	def __init__(self, runtime: Runtime):
+		runtime.add_node(self)
 
 		self.runtime = runtime
 		self.id = self.gen_id()
 
+		self.plugins = []
 		self.components = []
 		self.replicas = []
 
 	def add_component(self, component):
 		self.components.append(component)
 
-	def run(self, scheduler: Scheduler):
+	def add_plugin(self, plugin: NodePlugin):
+		self.plugins.append(plugin)
+
+	def run(self, scheduler):
+		# schedule plugins
+		for plugin in self.plugins:
+			plugin.run(scheduler)
+
+		# schedule component (processes)
 		for component in self.components:
 			component.run(scheduler)
 
@@ -91,12 +98,3 @@ class Component(Runnable):
 			if hasattr(entry, "is_process"):
 				method = self.process_factory(entry)
 				scheduler.set_periodic_timer(method, 1000)
-
-
-class NodePlugin:
-	pass
-
-
-class SimPlugin:
-	def get_node_plugin(self):
-		pass
