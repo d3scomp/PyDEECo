@@ -35,7 +35,10 @@ class Node(Runnable):
 
 		# schedule component (processes)
 		for component in self.components:
-			component.run(scheduler)
+			for entry in type(component).__dict__.values():
+				if hasattr(entry, "is_process"):
+					method = process_factory(component, entry)
+					scheduler.set_periodic_timer(method, 1000)
 
 
 class Role:
@@ -70,7 +73,11 @@ def process(method):
 		return method
 
 
-class Component(Runnable):
+def process_factory(component, entry):
+	return lambda time_ms: entry(component, component.knowledge)
+
+
+class Component:
 	counter = 0
 
 	class Knowledge:
@@ -91,12 +98,3 @@ class Component(Runnable):
 		self.knowledge = self.Knowledge()
 		self.knowledge.id = self.id
 		self.metadata = Metadata()
-
-	def process_factory(self, entry):
-		return lambda time_ms: entry(self, self.knowledge)
-
-	def run(self, scheduler):
-		for entry in type(self).__dict__.values():
-			if hasattr(entry, "is_process"):
-				method = self.process_factory(entry)
-				scheduler.set_periodic_timer(method, 1000)
