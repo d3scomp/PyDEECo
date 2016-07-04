@@ -74,7 +74,7 @@ def process(method):
 
 
 def process_factory(component, entry):
-	return lambda time_ms: entry(component, component.knowledge)
+	return lambda time_ms: entry(component)
 
 
 class Component:

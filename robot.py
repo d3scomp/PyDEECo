@@ -47,25 +47,25 @@ class Robot(Component):
 	# Processes follow
 
 	@process
-	def update_time(self, knowledge: Knowledge):
-		knowledge.time = self.node.runtime.scheduler.get_time_ms()
+	def update_time(self):
+		self.knowledge.time = self.node.runtime.scheduler.get_time_ms()
 
 	@process
-	def status(self, knowledge: Knowledge):
-		print(str(knowledge.time) + " ms: " + str(knowledge.id) + " at " + str(knowledge.position) + " goal " + str(
-			knowledge.goal) + " dist: " + str(knowledge.position.dist_to(knowledge.goal)))
+	def status(self):
+		print(str(self.knowledge.time) + " ms: " + str(self.knowledge.id) + " at " + str(self.knowledge.position) + " goal " + str(
+			self.knowledge.goal) + " dist: " + str(self.knowledge.position.dist_to(self.knowledge.goal)))
 
 	@process
-	def move(self, knowledge: Knowledge):
-		if knowledge.position.dist_to(knowledge.goal) < self.SPEED:
-			knowledge.position = knowledge.goal
+	def move(self):
+		if self.knowledge.position.dist_to(self.knowledge.goal) < self.SPEED:
+			self.knowledge.position = self.knowledge.goal
 		else:
-			vector = knowledge.goal - knowledge.position
+			vector = self.knowledge.goal - self.knowledge.position
 			vector /= vector.length()
 			vector *= self.SPEED
-			knowledge.position += vector
+			self.knowledge.position += vector
 
 	@process
-	def set_goal(self, knowledge: Knowledge):
-		if knowledge.position == knowledge.goal:
-			knowledge.goal = self.gen_position()
+	def set_goal(self):
+		if self.knowledge.position == self.knowledge.goal:
+			self.knowledge.goal = self.gen_position()
