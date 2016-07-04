@@ -23,7 +23,8 @@ IdentityReplicas(sim)
 # Add X nodes hosting one component each
 for i in range(0, 5):
 	node = Node(sim)
-	Robot(node)
+	robot = Robot()
+	node.add_component(robot)
 
 # Run the simulation
 sim.run(60000)
