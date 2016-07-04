@@ -38,7 +38,7 @@ class Node(Runnable):
 			for entry in type(component).__dict__.values():
 				if hasattr(entry, "is_process"):
 					method = process_factory(component, entry, self)
-					scheduler.set_periodic_timer(method, 1000)
+					scheduler.set_periodic_timer(method, entry.period_ms)
 
 
 class Role:
@@ -68,9 +68,13 @@ class Metadata:
 		self.coordinating = None
 
 
-def process(method):
+def process(period_ms: int):
+	def process_with_period(method):
 		method.is_process = True
+		method.period_ms = period_ms
 		return method
+
+	return process_with_period
 
 
 def process_factory(component, entry, node: Node):

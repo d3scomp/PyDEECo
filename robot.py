@@ -46,16 +46,16 @@ class Robot(Component):
 
 	# Processes follow
 
-	@process
+	@process(period_ms=1000)
 	def update_time(self, node: Node):
 		self.knowledge.time = node.runtime.scheduler.get_time_ms()
 
-	@process
+	@process(period_ms=1000)
 	def status(self, node: Node):
 		print(str(self.knowledge.time) + " ms: " + str(self.knowledge.id) + " at " + str(self.knowledge.position) + " goal " + str(
 			self.knowledge.goal) + " dist: " + str(self.knowledge.position.dist_to(self.knowledge.goal)))
 
-	@process
+	@process(period_ms=1000)
 	def move(self, node: Node):
 		if self.knowledge.position.dist_to(self.knowledge.goal) < self.SPEED:
 			self.knowledge.position = self.knowledge.goal
@@ -65,7 +65,7 @@ class Robot(Component):
 			vector *= self.SPEED
 			self.knowledge.position += vector
 
-	@process
+	@process(period_ms=1000)
 	def set_goal(self, node: Node):
 		if self.knowledge.position == self.knowledge.goal:
 			self.knowledge.goal = self.gen_position()
