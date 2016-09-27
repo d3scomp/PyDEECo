@@ -100,3 +100,14 @@ class Component:
 		self.knowledge = self.Knowledge()
 		self.knowledge.id = self.id
 		self.metadata = Metadata()
+
+
+class Ensemble:
+	def membership(self):
+		pass
+
+	def fitness(self):
+		pass
+
+	def exchange(self):
+		pass
