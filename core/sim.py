@@ -71,7 +71,7 @@ class PeriodicTimer(Timer):
 		self.scheduler.schedule_timer(self)
 
 
-class Sim:
+class Sim(Runtime):
 	def __init__(self):
 		self.scheduler = SimScheduler()
 
@@ -89,11 +89,6 @@ class Sim:
 		# Schedule system plugins
 		for plugin in self.plugins:
 			plugin.run(self.scheduler)
-
-		# Deploy system plugins on nodes
-		for plugin in self.plugins:
-			for node in self.nodes:
-				plugin.attach_to(node)
 
 		# Schedule nodes
 		for node in self.nodes:

@@ -1,0 +1,66 @@
+import copy
+from random import Random
+from functools import partial
+
+from core.deeco import Node
+from core.runnable import SimPlugin
+from core.runnable import NodePlugin
+
+
+class SimpleNetworkDevice(NodePlugin):
+	def __init__(self, node, network):
+		super().__init__(node)
+
+		self.network = network
+		self.receivers = []
+
+		# Provide access to this plugin
+		node.simpleNetworkDevice = self
+
+	def add_receiver(self, receiver):
+		self.receivers.append(receiver)
+
+	def receive(self, packet, time_ms):
+		for receiver in self.receivers:
+			receiver(packet)
+
+	def send(self, destination, packet):
+		"""Send packet to destination, distance limit is not take into account"""
+		self.network.send(destination, packet)
+
+	def broadcast(self, packet):
+		"""Broadcast packet within device range"""
+		self.network.broadcast(packet, self)
+
+
+class SimpleNetwork(SimPlugin):
+	def __init__(self, sim, range_m=250, delay_ms_mu=0, delay_ms_sigma=0):
+		super().__init__(sim)
+
+		self.devices = {}
+
+		self.random = Random()
+		self.random.seed(42)
+
+		self.range_m = range_m
+		self.delay_ms_mu = delay_ms_mu
+		self.delay_ms_sigma = delay_ms_sigma
+
+	def attach_to(self, node: Node):
+		super().attach_to(node)
+		self.devices[node.id] = SimpleNetworkDevice(node, self)
+
+	def deliver(self, device, packet):
+		delivery = partial(device.receive, packet)
+		self.sim.scheduler.set_timer(delivery, time_ms=self.__get_delivery_time_ms())
+
+	def send(self, destination, packet):
+		self.deliver(self.devices[destination], packet)
+
+	def broadcast(self, packet, source: SimpleNetworkDevice):
+		for address, device in self.devices.items():
+			if source.node.position.dist_to(device.node.position) < self.range_m and device is not source:
+				self.deliver(device, packet)
+
+	def __get_delivery_time_ms(self):
+		return self.sim.scheduler.get_time_ms() + self.random.normalvariate(self.delay_ms_mu, self.delay_ms_sigma)

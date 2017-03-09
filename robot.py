@@ -33,15 +33,23 @@ class Robot(Component):
 			self.color = None
 
 	# Component initialization
-	def __init__(self):
-		super().__init__()
+	def __init__(self, node: Node):
+		super().__init__(node)
 
 		# Initialize knowledge
 		self.knowledge.position = self.gen_position()
 		self.knowledge.goal = self.gen_position()
 		self.knowledge.color = self.random.choice(self.COLORS)
 
+		# Register network receive method
+		node.simpleNetworkDevice.add_receiver(self.__receive_packet)
+
+		node.position = self.knowledge.position
+
 		print("Robot " + str(self.knowledge.id) + " created")
+
+	def __receive_packet(self, packet):
+		print((str(self.knowledge.time) + " ms: " + str(self.knowledge.id) + " Received packet: " + str(packet)))
 
 	# Processes follow
 
@@ -64,7 +72,14 @@ class Robot(Component):
 			vector *= self.SPEED
 			self.knowledge.position += vector
 
+		node.position = self.knowledge.position
+
 	@process(period_ms=1000)
 	def set_goal(self, node: Node):
 		if self.knowledge.position == self.knowledge.goal:
 			self.knowledge.goal = self.gen_position()
+
+	@process(period_ms=2500)
+	def send_echo_packet(self, node: Node):
+		node.simpleNetworkDevice.send(node.id, "Echo packet payload from: " + str(self.knowledge.id))
+		node.simpleNetworkDevice.broadcast("Broadcast echo packet payload from: " + str(self.knowledge.id))

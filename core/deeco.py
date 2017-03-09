@@ -5,7 +5,7 @@ class Node(Runnable):
 	counter = 0
 
 	@staticmethod
-	def gen_id():
+	def __gen_id():
 		identifier = Node.counter
 		Node.counter += 1
 		return identifier
@@ -14,10 +14,14 @@ class Node(Runnable):
 		runtime.add_node(self)
 
 		self.runtime = runtime
-		self.id = self.gen_id()
+		self.id = self.__gen_id()
 
 		self.plugins = []
 		self.components = []
+
+		# Deploy system plugins on node
+		for plugin in runtime.plugins:
+			plugin.attach_to(self)
 
 	def add_component(self, component):
 		self.components.append(component)
@@ -90,7 +94,7 @@ class Component:
 		Component.counter += 1
 		return identifier
 
-	def __init__(self):
+	def __init__(self, node: Node):
 		self.id = self.gen_id()
 
 		self.time = None

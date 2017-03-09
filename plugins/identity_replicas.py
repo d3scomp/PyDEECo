@@ -10,6 +10,7 @@ class IdentityReplicas(SimPlugin):
 		self.nodes = []
 
 	def attach_to(self, node: Node):
+		super().attach_to(node)
 		self.nodes.append(node)
 		node.replicas = self
 
