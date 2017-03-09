@@ -1,14 +1,7 @@
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import sys
-
-from sim import Sim
+from core.deeco import Node
+from core.sim import Sim
+from plugins.identity_replicas import IdentityReplicas
 from robot import Robot
-from deeco import Node
-
-from snapshoter import Snapshoter
-from identity_replicas import IdentityReplicas
 
 print("Running simulation")
 

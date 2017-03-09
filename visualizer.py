@@ -1,23 +1,15 @@
-import numpy as np
 import matplotlib
 matplotlib.use("Qt5Agg")
-import matplotlib.pyplot as plt
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-import sys
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import numpy as np
-import matplotlib.pyplot as plot
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
 
-import simloader
-from deeco import Component
-from deeco import BaseKnowledge
-from sim import Sim
+from core import simloader
+from core.deeco import BaseKnowledge
+from core.sim import Sim
 
 colors = ["red", "green", "blue", "yellow", "black", "lime", "cyan", "orange", "orange", "orange", "orange"]
 

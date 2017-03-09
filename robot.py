@@ -1,12 +1,11 @@
 from random import Random
 
-from deeco import Node
-from deeco import Component
-from deeco import Role
-from deeco import BaseKnowledge
-from deeco import process
-
-from position import Position
+from core.deeco import BaseKnowledge
+from core.deeco import Component
+from core.deeco import Node
+from core.deeco import Role
+from core.deeco import process
+from core.position import Position
 
 
 # Role

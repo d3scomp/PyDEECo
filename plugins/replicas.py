@@ -1,5 +1,4 @@
-import types
-from runnable import NodePlugin
+from core.runnable import NodePlugin
 
 
 class Replicas(NodePlugin):
