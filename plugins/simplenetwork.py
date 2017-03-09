@@ -59,7 +59,9 @@ class SimpleNetwork(SimPlugin):
 
 	def broadcast(self, packet, source: SimpleNetworkDevice):
 		for address, device in self.devices.items():
-			if source.node.position.dist_to(device.node.position) < self.range_m and device is not source:
+			src_pos = source.node.positionProvider.get()
+			dst_pos = device.node.positionProvider.get()
+			if src_pos.dist_to(dst_pos) < self.range_m and device is not source:
 				self.deliver(device, packet)
 
 	def __get_delivery_time_ms(self):

@@ -1,5 +1,6 @@
 import math
 
+
 class Position:
 	EQ_THRESHOLD = 0.000001
 

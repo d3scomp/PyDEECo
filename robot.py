@@ -37,7 +37,7 @@ class Robot(Component):
 		super().__init__(node)
 
 		# Initialize knowledge
-		self.knowledge.position = self.gen_position()
+		self.knowledge.position = node.positionProvider.get()
 		self.knowledge.goal = self.gen_position()
 		self.knowledge.color = self.random.choice(self.COLORS)
 
@@ -62,22 +62,16 @@ class Robot(Component):
 		print(str(self.knowledge.time) + " ms: " + str(self.knowledge.id) + " at " + str(self.knowledge.position) + " goal " + str(
 			self.knowledge.goal) + " dist: " + str(self.knowledge.position.dist_to(self.knowledge.goal)))
 
-	@process(period_ms=1000)
-	def move(self, node: Node):
-		if self.knowledge.position.dist_to(self.knowledge.goal) < self.SPEED:
-			self.knowledge.position = self.knowledge.goal
-		else:
-			vector = self.knowledge.goal - self.knowledge.position
-			vector /= vector.length()
-			vector *= self.SPEED
-			self.knowledge.position += vector
-
-		node.position = self.knowledge.position
+	@process(period_ms=100)
+	def sense_position(self, node: Node):
+		self.knowledge.position = node.positionProvider.get()
 
 	@process(period_ms=1000)
 	def set_goal(self, node: Node):
 		if self.knowledge.position == self.knowledge.goal:
 			self.knowledge.goal = self.gen_position()
+			node.walker.set_target(self.knowledge.goal)
+		node.walker.set_target(self.knowledge.goal)
 
 	@process(period_ms=2500)
 	def send_echo_packet(self, node: Node):
