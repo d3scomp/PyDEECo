@@ -17,7 +17,7 @@ sim = Sim()
 IdentityReplicas(sim)
 
 # Add simple network device
-SimpleNetwork(sim)
+SimpleNetwork(sim, range_m=3, delay_ms_mu=20, delay_ms_sigma=5)
 
 # Add X nodes hosting one component each
 for i in range(0, 5):

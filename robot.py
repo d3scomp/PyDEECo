@@ -53,7 +53,7 @@ class Robot(Component):
 
 	# Processes follow
 
-	@process(period_ms=1000)
+	@process(period_ms=10)
 	def update_time(self, node: Node):
 		self.knowledge.time = node.runtime.scheduler.get_time_ms()
 
