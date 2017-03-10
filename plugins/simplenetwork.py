@@ -15,7 +15,7 @@ class SimpleNetworkDevice(NodePlugin):
 		self.receivers = []
 
 		# Provide access to this plugin
-		node.simpleNetworkDevice = self
+		node.networkDevice = self
 
 	def add_receiver(self, receiver):
 		self.receivers.append(receiver)

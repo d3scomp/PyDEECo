@@ -4,6 +4,8 @@ from core.position import Position
 from plugins.identity_replicas import IdentityReplicas
 from plugins.simplenetwork import SimpleNetwork
 from plugins.walker import Walker
+from plugins.knowledgepublisher import KnowledgePublisher
+
 from robot import Robot
 
 print("Running simulation")
@@ -25,6 +27,7 @@ for i in range(0, 5):
 
 	node = Node(sim)
 	Walker(node, position)
+	KnowledgePublisher(node)
 
 	robot = Robot(node)
 

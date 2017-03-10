@@ -42,7 +42,7 @@ class Robot(Component):
 		self.knowledge.color = self.random.choice(self.COLORS)
 
 		# Register network receive method
-		node.simpleNetworkDevice.add_receiver(self.__receive_packet)
+		node.networkDevice.add_receiver(self.__receive_packet)
 
 		node.position = self.knowledge.position
 
@@ -75,5 +75,5 @@ class Robot(Component):
 
 	@process(period_ms=2500)
 	def send_echo_packet(self, node: Node):
-		node.simpleNetworkDevice.send(node.id, "Echo packet payload from: " + str(self.knowledge.id))
-		node.simpleNetworkDevice.broadcast("Broadcast echo packet payload from: " + str(self.knowledge.id))
+		node.networkDevice.send(node.id, "Echo packet payload from: " + str(self.knowledge.id))
+		node.networkDevice.broadcast("Broadcast echo packet payload from: " + str(self.knowledge.id))
