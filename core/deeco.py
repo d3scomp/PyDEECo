@@ -1,5 +1,5 @@
 from core.runnable import *
-
+from core.packets import KnowledgePacket
 
 class Node(Runnable):
 	counter = 0
@@ -115,6 +115,12 @@ class Component:
 
 
 class ShadowKnowledge:
+	def __init__(self, packet: KnowledgePacket):
+		self.__init__(packet.id)
+		self.timestamp = packet.timestamp_ms
+		self.knowledge = packet.knowledge
+
+	# TODO: Unused ?
 	def __init__(self, component_id: int):
 		self.id = component_id
 		self.timestamp = 0
@@ -127,13 +133,13 @@ class ShadowKnowledge:
 
 
 class EnsembleDefinition:
-	def fitness(self, *components):
+	def fitness(self, *knowledge):
 		pass
 
-	def membership(self, *components):
+	def membership(self, *knowledge):
 		pass
 
-	def knowledge(self, *components):
+	def knowledge(self, *knowledge):
 		pass
 
 

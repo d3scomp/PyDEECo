@@ -16,4 +16,4 @@ class KnowledgePublisher(NodePlugin):
 		print("Publishing knowledge on " + str(self.node.id))
 
 		for component in self.node.components:
-			self.node.networkDevice.broadcast(KnowledgePacket(component))
+			self.node.networkDevice.broadcast(KnowledgePacket(component, time_ms))

@@ -6,6 +6,7 @@ from core.deeco import Node
 from core.deeco import Role
 from core.deeco import process
 from core.position import Position
+from core.packets import TextPacket
 
 
 # Role
@@ -75,5 +76,5 @@ class Robot(Component):
 
 	@process(period_ms=2500)
 	def send_echo_packet(self, node: Node):
-		node.networkDevice.send(node.id, "Echo packet payload from: " + str(self.knowledge.id))
-		node.networkDevice.broadcast("Broadcast echo packet payload from: " + str(self.knowledge.id))
+		node.networkDevice.send(node.id, TextPacket("Echo packet payload from: " + str(self.knowledge.id)))
+		node.networkDevice.broadcast(TextPacket("Broadcast echo packet payload from: " + str(self.knowledge.id)))
