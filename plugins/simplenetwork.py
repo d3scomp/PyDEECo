@@ -3,6 +3,7 @@ from random import Random
 from functools import partial
 
 from core.deeco import Node
+from core.packets import Packet
 from core.runnable import SimPlugin
 from core.runnable import NodePlugin
 
@@ -24,11 +25,11 @@ class SimpleNetworkDevice(NodePlugin):
 		for receiver in self.receivers:
 			receiver(packet)
 
-	def send(self, destination, packet):
+	def send(self, destination, packet: Packet):
 		"""Send packet to destination, distance limit is not take into account"""
 		self.network.send(destination, packet)
 
-	def broadcast(self, packet):
+	def broadcast(self, packet: Packet):
 		"""Broadcast packet within device range"""
 		self.network.broadcast(packet, self)
 
@@ -50,14 +51,14 @@ class SimpleNetwork(SimPlugin):
 		super().attach_to(node)
 		self.devices[node.id] = SimpleNetworkDevice(node, self)
 
-	def deliver(self, device, packet):
+	def deliver(self, device, packet: Packet):
 		delivery = partial(device.receive, packet)
 		self.sim.scheduler.set_timer(delivery, time_ms=self.__get_delivery_time_ms())
 
-	def send(self, destination, packet):
+	def send(self, destination, packet: Packet):
 		self.deliver(self.devices[destination], packet)
 
-	def broadcast(self, packet, source: SimpleNetworkDevice):
+	def broadcast(self, packet: Packet, source: SimpleNetworkDevice):
 		for address, device in self.devices.items():
 			src_pos = source.node.positionProvider.get()
 			dst_pos = device.node.positionProvider.get()
