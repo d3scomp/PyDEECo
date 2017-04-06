@@ -1,6 +1,7 @@
 from core.runnable import *
 from core.packets import KnowledgePacket
 
+
 class Node(Runnable):
 	counter = 0
 
@@ -25,6 +26,9 @@ class Node(Runnable):
 
 	def add_component(self, component):
 		self.components.append(component)
+
+	def get_components(self):
+		return self.components
 
 	def add_plugin(self, plugin: NodePlugin):
 		self.plugins.append(plugin)
