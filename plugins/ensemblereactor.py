@@ -56,9 +56,11 @@ class EnsembleReactor(NodePlugin):
 
 		self.demands = {}
 
-		self.assignments = {}
-
 	def run(self, scheduler):
+		# Add assignment records to knowledge
+		for component in self.node.get_components():
+			component.knowledge.assignment = AssignmentRecord(None, 0)
+
 		scheduler.set_periodic_timer(self.react, period_ms=1000)
 
 	def react(self, time_ms):
@@ -66,10 +68,6 @@ class EnsembleReactor(NodePlugin):
 
 		for component_id, demand in self.demands.items():
 			packet = DemandPacket(time_ms, demand.component_id, self.node.id, demand.fitness_difference)
-			self.node.networkDevice.broadcast(packet)
-
-		for component_id, assignment in self.assignments.items():
-			packet = AssignmentPacket(time_ms, component_id, assignment.node_id, assignment.fitness_difference)
 			self.node.networkDevice.broadcast(packet)
 
 		# TODO: Maintain ensembles check timestamps
@@ -90,10 +88,18 @@ class EnsembleReactor(NodePlugin):
 	def process_knowledge(self, knowledge_packet: KnowledgePacket):
 		print("Reactor processing knowledge packet")
 
-		if self.shadow_repository.process_knowledge(knowledge_packet):
-			# we are done, component is already handled
-			return
+#		if self.shadow_repository.process_knowledge(knowledge_packet):
+#			we are done, component is already handled
+#			return
 
+		if knowledge_packet.knowledge.assignment.node_id is self.node.id:
+			# Already assigned to us, lets process demands
+			self.process_assignment(knowledge_packet)
+		else:
+			# Not assigned to us, lets create demand
+			self.create_demand(knowledge_packet)
+
+	def create_demand(self, knowledge_packet: KnowledgePacket):
 		# TODO: Try to improve existing ensemble instance
 
 		# TODO: Do not create demand when fitness not better
@@ -115,7 +121,7 @@ class EnsembleReactor(NodePlugin):
 
 		# Assign free component
 		if demand.component_id not in self.assignments:
-			self.assignments[demand.component_id] = AssignmentRecord(demand.node_id, demand.fitness_difference)
+			self.assign(demand.component_id, demand.node_id, demand.fitness_difference)
 			return
 
 		# Re-assign component
@@ -123,11 +129,17 @@ class EnsembleReactor(NodePlugin):
 		fitness_clash = demand.fitness_difference == self.assignments[demand.component_id]
 		id_superior = demand.node_id < self.assignments[demand.component_id].node_id
 		if fitness_upgrade or (fitness_clash and id_superior):
-			self.assignments[demand.component_id] = AssignmentRecord(demand.node_id, demand.fitness_difference)
+			self.assign(demand.component_id, demand.node_id, demand.fitness_difference)
 			return
 
-	def process_assignment(self, assignment: AssignmentPacket):
-		print("Reactor processing assignment packet")
+	def assign(self, component_id: int, node_id: int, fitness_difference: float):
+		# TODO: One more vote for keeping components in dictionary
+		for component in self.node.get_components():
+			if component.id == component_id:
+				component.knowledge.assignment = AssignmentRecord(node_id, fitness_difference)
+
+	def process_assignment(self, knowledge_packet: KnowledgePacket):
+		assignment = knowledge_packet.knowledge.assignent
 
 		if assignment.node_id != self.node.id:
 			return
@@ -149,5 +161,3 @@ class EnsembleReactor(NodePlugin):
 				pass
 			else:
 				raise Exception("demand.target_ensemble should contain definition or instance", demand)
-
-
