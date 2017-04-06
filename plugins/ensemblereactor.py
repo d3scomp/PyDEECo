@@ -7,6 +7,7 @@ from core.packets import Packet
 from core.packets import KnowledgePacket
 from core.packets import PacketType
 from core.packets import DemandPacket
+from core.packets import AssignmentPacket
 
 
 class ShadowRepository:
@@ -54,15 +55,20 @@ class EnsembleReactor(NodePlugin):
 
 		self.demands = set()
 
-		self.assignment = {}
+		self.assignments = {}
 
 	def run(self, scheduler):
 		scheduler.set_periodic_timer(self.react, period_ms=1000)
 
 	def react(self, time_ms):
-		print("Reactor invoked, sending demands")
+		print("Reactor invoked, sending demands and assignments")
+
 		for demand in self.demands:
-			packet = DemandPacket(demand.component_id, self.node.id, demand.fitness_difference)
+			packet = DemandPacket(time_ms, demand.component_id, self.node.id, demand.fitness_difference)
+			self.node.networkDevice.broadcast(packet)
+
+		for component_id, assignment in self.assignments:
+			packet = AssignmentPacket(time_ms, component_id, assignment.node_id, assignment.fitness_difference)
 			self.node.networkDevice.broadcast(packet)
 
 	def receive(self, packet: Packet):
@@ -97,18 +103,18 @@ class EnsembleReactor(NodePlugin):
 	def process_demand(self, demand: DemandPacket):
 		print("Reactor processing demand packet")
 
-		if demand.demanded_id not in self.node.get_components():
+		if demand.component_id not in self.node.get_components():
 			return
 
 		# Assign free component
-		if demand.demanded_id not in self.assignment:
-			self.assignment[demand.demanded_id] = AssignmentRecord(demand.demanding_id, demand.fitness_difference)
+		if demand.component_id not in self.assignments:
+			self.assignments[demand.component_id] = AssignmentRecord(demand.node_id, demand.fitness_difference)
 			return
 
 		# Re-assign component
-		fitness_upgrade = demand.fitness_difference > self.assignment[demand.demanded_id]
-		fitness_clash = demand.fitness_difference == self.assignment[demand.demanded_id]
-		id_superior = demand.demanding_id < self.assignment[demand.demanded_id].node_id
+		fitness_upgrade = demand.fitness_difference > self.assignments[demand.component_id]
+		fitness_clash = demand.fitness_difference == self.assignments[demand.component_id]
+		id_superior = demand.node_id < self.assignments[demand.component_id].node_id
 		if fitness_upgrade or (fitness_clash and id_superior):
-			self.assignment[demand.demanded_id] = AssignmentRecord(demand.demanding_id, demand.fitness_difference)
+			self.assignments[demand.component_id] = AssignmentRecord(demand.node_id, demand.fitness_difference)
 			return

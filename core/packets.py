@@ -18,11 +18,16 @@ class Packet:
 		self.type = type
 
 
-class KnowledgePacket(Packet):
-	def __init__(self, component, time_ms: int):
-		super().__init__(PacketType.KNOWLEDGE)
-		self.id = component.id
+class TimestampedPacket(Packet):
+	def __init__(self, type: PacketType, time_ms: int):
+		super().__init__(type)
 		self.timestamp_ms = time_ms
+
+
+class KnowledgePacket(TimestampedPacket):
+	def __init__(self, component, time_ms: int):
+		super().__init__(PacketType.KNOWLEDGE, time_ms)
+		self.id = component.id
 		self.knowledge = deepcopy(component.knowledge)
 
 
@@ -35,22 +40,25 @@ class TextPacket(Packet):
 		return self.text
 
 
-class DemandPacket(Packet):
-	def __init__(self, demanded_component_id: int, demanding_node_id: int, fitness_difference: float):
-		super().__init__(PacketType.DEMAND)
-		self.demanded_id = demanded_component_id
-		self.demanding_id = demanding_node_id
+class DemandPacket(TimestampedPacket):
+	def __init__(self, time_ms: int, component_id: int, node_id: int, fitness_difference: float):
+		super().__init__(PacketType.DEMAND, time_ms)
+		self.component_id = component_id
+		self.node_id = node_id
 		self.fitness_difference = fitness_difference
 
 	def __str__(self):
-		return "[node " + str(self.demanding_id) + " wants component " + str(self.demanded_id) + " to increase fitness by " + str(self.fitness_difference) + "]"
+		return "[node " + str(self.node_id) + " wants component " + str(self.component_id)\
+			+ " to increase fitness by " + str(self.fitness_difference) + "]"
 
 
-class AssignmentPacket(Packet):
-	def __init__(self, component_id: int, node_id: int):
-		super().__init__(PacketType.ASSIGNMENT)
+class AssignmentPacket(TimestampedPacket):
+	def __init__(self, time_ms: int, component_id: int, node_id: int, fitness_difference: float):
+		super().__init__(PacketType.ASSIGNMENT, time_ms)
 		self.component_id = component_id
 		self.node_id = node_id
+		self.fitness_difference = fitness_difference
 
 	def __str__(self):
-		return "[node " + str(self.node_id) + " wants component " + str(self.component_id) + "]"
+		return "[node " + str(self.node_id) + " is assigned component " + str(self.component_id)\
+			+ " for " + str(self.fitness_difference) + " fitness ]"
