@@ -30,9 +30,10 @@ class ShadowRepository:
 
 
 class DemandRecord:
-	def __init__(self, component_id: int, fitness_difference: float):
+	def __init__(self, component_id: int, fitness_difference: float, target_ensemble: EnsembleInstance):
 		self.component_id = component_id
 		self.fitness_difference = fitness_difference
+		self.target_ensemble = target_ensemble
 
 	def __hash__(self):
 		return self.component_id.__hash__()
@@ -53,7 +54,7 @@ class EnsembleReactor(NodePlugin):
 		self.shadow_repository = ShadowRepository()
 		self.instances = []
 
-		self.demands = set()
+		self.demands = {}
 
 		self.assignments = {}
 
@@ -63,13 +64,15 @@ class EnsembleReactor(NodePlugin):
 	def react(self, time_ms):
 		print("Reactor invoked, sending demands and assignments")
 
-		for demand in self.demands:
+		for component_id, demand in self.demands.items():
 			packet = DemandPacket(time_ms, demand.component_id, self.node.id, demand.fitness_difference)
 			self.node.networkDevice.broadcast(packet)
 
-		for component_id, assignment in self.assignments:
+		for component_id, assignment in self.assignments.items():
 			packet = AssignmentPacket(time_ms, component_id, assignment.node_id, assignment.fitness_difference)
 			self.node.networkDevice.broadcast(packet)
+
+		# TODO: Maintain ensembles check timestamps
 
 	def receive(self, packet: Packet):
 		if packet.type == PacketType.KNOWLEDGE:
@@ -79,6 +82,10 @@ class EnsembleReactor(NodePlugin):
 		if packet.type == PacketType.DEMAND:
 			print("Demand packet received by reactor")
 			self.process_demand(packet)
+
+		if packet.type == PacketType.ASSIGNMENT:
+			print("Assignment packet received by reactor")
+			self.process_assignment(packet)
 
 	def process_knowledge(self, knowledge_packet: KnowledgePacket):
 		print("Reactor processing knowledge packet")
@@ -97,8 +104,8 @@ class EnsembleReactor(NodePlugin):
 			impact = instance.add_impact(knowledge_packet.knowledge)
 			if impact >= 0:
 				print("Attempting to create new ensemble instance, add impact: " + str(impact))
-				demand = DemandRecord(knowledge_packet.id, impact)
-				self.demands.add(demand)
+				demand = DemandRecord(knowledge_packet.id, impact, None)
+				self.demands[knowledge_packet.id] = demand
 
 	def process_demand(self, demand: DemandPacket):
 		print("Reactor processing demand packet")
@@ -118,3 +125,29 @@ class EnsembleReactor(NodePlugin):
 		if fitness_upgrade or (fitness_clash and id_superior):
 			self.assignments[demand.component_id] = AssignmentRecord(demand.node_id, demand.fitness_difference)
 			return
+
+	def process_assignment(self, assignment: AssignmentPacket):
+		print("Reactor processing assignment packet")
+
+		if assignment.node_id != self.node.id:
+			return
+
+		# Already in ensemble, update
+		# TODO: Moves between ensembles on the same node
+		for instance in self.instances:
+			if instance.contains(assignment.component_id):
+				# TODO: Record assignment timestamps
+				return
+
+		# Process according to demand
+		with self.demands[assignment.component_id] as demand:
+			if demand.target_ensemble is EnsembleDefinition:
+				# TODO: Create new instance
+				pass
+			elif demand.target_ensemble is EnsembleInstance:
+				# TODO: Add knowledge to existing instance
+				pass
+			else:
+				raise Exception("demand.target_ensemble should contain definition or instance", demand)
+
+
