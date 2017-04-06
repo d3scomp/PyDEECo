@@ -74,7 +74,7 @@ class EnsembleReactor(NodePlugin):
 		# TODO: Try to improve existing ensemble instance
 
 		# TODO: Do not create demand when fitness not better
-		
+
 		# Build new ensemble instance if possible
 		for definition in self.definitions:
 			instance = EnsembleInstance(definition)
@@ -95,7 +95,7 @@ class EnsembleReactor(NodePlugin):
 			self.assignment[demand.demanded_id] = AssignmentRecord(demand.demanding_id, demand.fitness_difference)
 			return
 
-		# Assign used component
+		# Re-assign component
 		fitness_upgrade = demand.fitness_difference > self.assignment[demand.demanded_id]
 		fitness_clash = demand.fitness_difference == self.assignment[demand.demanded_id]
 		id_superior = demand.demanding_id < self.assignment[demand.demanded_id].node_id
