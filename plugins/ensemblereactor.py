@@ -73,6 +73,8 @@ class EnsembleReactor(NodePlugin):
 
 		# TODO: Try to improve existing ensemble instance
 
+		# TODO: Do not create demand when fitness not better
+		
 		# Build new ensemble instance if possible
 		for definition in self.definitions:
 			instance = EnsembleInstance(definition)
