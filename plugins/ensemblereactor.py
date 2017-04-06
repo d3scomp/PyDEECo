@@ -28,6 +28,15 @@ class ShadowRepository:
 			self.repository[knowledge_packet.id] = ShadowKnowledge(knowledge_packet)
 
 
+class DemandRecord:
+	def __init__(self, component_id: int, fitness_difference: float):
+		self.component_id = component_id
+		self.fitness_difference = fitness_difference
+
+	def __hash__(self):
+		return self.component_id.__hash__()
+
+
 class AssignmentRecord:
 	def __init__(self, node_id: int, fitness_gain: float):
 		self.node_id = node_id
@@ -53,7 +62,8 @@ class EnsembleReactor(NodePlugin):
 	def react(self, time_ms):
 		print("Reactor invoked, sending demands")
 		for demand in self.demands:
-			self.node.networkDevice.broadcast(demand)
+			packet = DemandPacket(demand.component_id, self.node.id, demand.fitness_difference)
+			self.node.networkDevice.broadcast(packet)
 
 	def receive(self, packet: Packet):
 		if packet.type == PacketType.KNOWLEDGE:
@@ -81,7 +91,7 @@ class EnsembleReactor(NodePlugin):
 			impact = instance.add_impact(knowledge_packet.knowledge)
 			if impact >= 0:
 				print("Attempting to create new ensemble instance, add impact: " + str(impact))
-				demand = DemandPacket(knowledge_packet.id, self.node.id, impact)
+				demand = DemandRecord(knowledge_packet.id, impact)
 				self.demands.add(demand)
 
 	def process_demand(self, demand: DemandPacket):
