@@ -1,6 +1,7 @@
 from core.deeco import EnsembleDefinition
 from robot import Robot
 
+
 class RobotGroup(EnsembleDefinition):
 	def fitness(self, *components):
 		pass

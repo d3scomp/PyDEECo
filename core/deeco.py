@@ -161,3 +161,7 @@ class EnsembleInstance:
 	def remove_impact(self, knowledge: ShadowKnowledge):
 		# TODO: calculate fitness change when knowledge si removed
 		return -42
+
+	def replace_impact(self, knowledge: ShadowKnowledge):
+		# TODO: calculate fitness change when knowledge si replaced
+		return 0
