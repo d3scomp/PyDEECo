@@ -133,7 +133,7 @@ class EnsembleReactor(NodePlugin):
 			return
 
 	def assign(self, component_id: int, node_id: int, fitness_difference: float):
-		# TODO: One more vote for keeping components in dictionary
+		# TODO: One more vote for keeping components in a dictionary
 		for component in self.node.get_components():
 			if component.id == component_id:
 				component.knowledge.assignment = AssignmentRecord(node_id, fitness_difference)
