@@ -30,6 +30,16 @@ class Node(Runnable):
 	def get_components(self):
 		return self.components
 
+	def get_component_ids(self):
+		return map(lambda x: x.id, self.components)
+
+	def get_component_by_id(self, id: int):
+		for component in self.components:
+			if component.id == id:
+				return component
+
+		return None
+
 	def add_plugin(self, plugin: NodePlugin):
 		self.plugins.append(plugin)
 

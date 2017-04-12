@@ -111,20 +111,22 @@ class EnsembleReactor(NodePlugin):
 				self.demands[knowledge_packet.id] = demand
 
 	def process_demand(self, demand: DemandPacket):
-		if demand.component_id not in self.node.get_components():
+		if demand.component_id not in map(lambda x: x.id, self.node.get_components()):
 			return
 
 		print("Reactor processing demand packet")
 
+		assignment = self.node.get_component_by_id(demand.component_id).knowledge.assignment
+
 		# Assign free component
-		if demand.component_id not in self.assignments:
+		if assignment.node_id is None:
 			self.assign(demand.component_id, demand.node_id, demand.fitness_difference)
 			return
 
 		# Re-assign component
-		fitness_upgrade = demand.fitness_difference > self.assignments[demand.component_id]
-		fitness_clash = demand.fitness_difference == self.assignments[demand.component_id]
-		id_superior = demand.node_id < self.assignments[demand.component_id].node_id
+		fitness_upgrade = demand.fitness_difference > assignment.fitness_gain
+		fitness_clash = demand.fitness_difference == assignment.fitness_gain
+		id_superior = demand.node_id < assignment.node_id
 		if fitness_upgrade or (fitness_clash and id_superior):
 			self.assign(demand.component_id, demand.node_id, demand.fitness_difference)
 			return
@@ -136,7 +138,7 @@ class EnsembleReactor(NodePlugin):
 				component.knowledge.assignment = AssignmentRecord(node_id, fitness_difference)
 
 	def process_assignment(self, knowledge_packet: KnowledgePacket):
-		assignment = knowledge_packet.knowledge.assignent
+		assignment = knowledge_packet.knowledge.assignment
 
 		if assignment.node_id != self.node.id:
 			return
@@ -149,7 +151,7 @@ class EnsembleReactor(NodePlugin):
 				return
 
 		# Process according to demand
-		with self.demands[assignment.component_id] as demand:
+		with self.demands[knowledge_packet.id] as demand:
 			if demand.target_ensemble is EnsembleDefinition:
 				# TODO: Create new instance
 				print("Would create new ensemble of type " + str(demand.target_ensemble) + " with component " + assignment.component_id)
