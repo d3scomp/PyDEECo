@@ -74,19 +74,16 @@ class EnsembleReactor(NodePlugin):
 
 	def receive(self, packet: Packet):
 		if packet.type == PacketType.KNOWLEDGE:
-			print("Knowledge packet received by reactor")
 			self.process_knowledge(packet)
 
 		if packet.type == PacketType.DEMAND:
-			print("Demand packet received by reactor")
 			self.process_demand(packet)
 
 		if packet.type == PacketType.ASSIGNMENT:
-			print("Assignment packet received by reactor")
 			self.process_assignment(packet)
 
 	def process_knowledge(self, knowledge_packet: KnowledgePacket):
-		print("Reactor processing knowledge packet")
+#		print("Reactor processing knowledge packet")
 
 #		if self.shadow_repository.process_knowledge(knowledge_packet):
 #			we are done, component is already handled
@@ -109,15 +106,15 @@ class EnsembleReactor(NodePlugin):
 			instance = EnsembleInstance(definition)
 			impact = instance.add_impact(knowledge_packet.knowledge)
 			if impact >= 0:
-				print("Attempting to create new ensemble instance, add impact: " + str(impact))
+				print("Demanding to create new ensemble instance, add impact: " + str(impact))
 				demand = DemandRecord(knowledge_packet.id, impact, None)
 				self.demands[knowledge_packet.id] = demand
 
 	def process_demand(self, demand: DemandPacket):
-		print("Reactor processing demand packet")
-
 		if demand.component_id not in self.node.get_components():
 			return
+
+		print("Reactor processing demand packet")
 
 		# Assign free component
 		if demand.component_id not in self.assignments:
@@ -155,9 +152,11 @@ class EnsembleReactor(NodePlugin):
 		with self.demands[assignment.component_id] as demand:
 			if demand.target_ensemble is EnsembleDefinition:
 				# TODO: Create new instance
+				print("Would create new ensemble of type " + str(demand.target_ensemble) + " with component " + assignment.component_id)
 				pass
 			elif demand.target_ensemble is EnsembleInstance:
 				# TODO: Add knowledge to existing instance
+				print("Would add  to ensemble " + str(demand.target_ensemble) + " component " + assignment.component_id)
 				pass
 			else:
 				raise Exception("demand.target_ensemble should contain definition or instance", demand)
