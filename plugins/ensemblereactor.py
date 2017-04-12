@@ -107,7 +107,7 @@ class EnsembleReactor(NodePlugin):
 			impact = instance.add_impact(knowledge_packet.knowledge)
 			if impact >= 0:
 				print("Demanding to create new ensemble instance, add impact: " + str(impact))
-				demand = DemandRecord(knowledge_packet.id, impact, None)
+				demand = DemandRecord(knowledge_packet.id, impact, definition)
 				self.demands[knowledge_packet.id] = demand
 
 	def process_demand(self, demand: DemandPacket):
@@ -151,14 +151,14 @@ class EnsembleReactor(NodePlugin):
 				return
 
 		# Process according to demand
-		with self.demands[knowledge_packet.id] as demand:
-			if demand.target_ensemble is EnsembleDefinition:
-				# TODO: Create new instance
-				print("Would create new ensemble of type " + str(demand.target_ensemble) + " with component " + assignment.component_id)
-				pass
-			elif demand.target_ensemble is EnsembleInstance:
-				# TODO: Add knowledge to existing instance
-				print("Would add  to ensemble " + str(demand.target_ensemble) + " component " + assignment.component_id)
-				pass
-			else:
-				raise Exception("demand.target_ensemble should contain definition or instance", demand)
+		demand = self.demands[knowledge_packet.id]
+		if isinstance(demand.target_ensemble, EnsembleDefinition):
+			# TODO: Create new instance
+			print("Node " + str(self.node.id) + " Would create new ensemble of type " + str(demand.target_ensemble) + " with component " + str(knowledge_packet.id))
+			pass
+		elif isinstance(demand.target_ensemble, EnsembleInstance):
+			# TODO: Add knowledge to existing instance
+			print("Node " + str(self.node.id) + " Would add  to ensemble " + str(demand.target_ensemble) + " component " + str(knowledge_packet.id))
+			pass
+		else:
+			raise Exception("demand.target_ensemble should contain definition or instance", demand.target_ensemble)
