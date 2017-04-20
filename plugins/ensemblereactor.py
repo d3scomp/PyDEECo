@@ -161,7 +161,7 @@ class EnsembleReactor(NodePlugin):
 		# Already in ensemble, update
 		# TODO: Moves between ensembles on the same node
 		for instance in self.instances:
-			if instance.contains(assignment.component_id):
+			if instance.contains(knowledge_packet.id):
 				# TODO: Record assignment timestamps
 				return
 
@@ -172,12 +172,14 @@ class EnsembleReactor(NodePlugin):
 		# Process according to demand
 		demand = self.demands[knowledge_packet.id]
 		if isinstance(demand.target_ensemble, EnsembleDefinition):
-			# TODO: Create new instance
-			print("Node " + str(self.node.id) + " Would create new ensemble of type " + str(demand.target_ensemble) + " with component " + str(knowledge_packet.id))
-			pass
+			print("Reactor: Node " + str(self.node.id) + " Creating new ensemble of type " + str(demand.target_ensemble) + " with component " + str(knowledge_packet.id))
+			instance = demand.target_ensemble.instantiate()
+			instance.add(knowledge_packet.knowledge)
+
+			self.instances.append(instance)
+
 		elif isinstance(demand.target_ensemble, EnsembleInstance):
-			# TODO: Add knowledge to existing instance
-			print("Node " + str(self.node.id) + " Would add  to ensemble " + str(demand.target_ensemble) + " component " + str(knowledge_packet.id))
-			pass
+			print("Reactor: Node " + str(self.node.id) + " Adding to ensemble " + str(demand.target_ensemble) + " component " + str(knowledge_packet.id))
+			demand.target_ensemble.add(knowledge_packet.knowledge)
 		else:
 			raise Exception("demand.target_ensemble should contain definition or instance", demand.target_ensemble)

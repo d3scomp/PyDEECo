@@ -161,6 +161,9 @@ class EnsembleDefinition:
 	def knowledge(self, *knowledge):
 		pass
 
+	def instantiate(self):
+		return EnsembleInstance(self)
+
 
 class EnsembleInstance:
 	def __init__(self, definition: EnsembleDefinition):
@@ -169,6 +172,11 @@ class EnsembleInstance:
 
 	def contains(self, component_id: int):
 		return component_id in map(lambda x: x.id, self.memberKnowledge)
+
+	def add(self, knowledge: BaseKnowledge):
+		# TODO: Filter out outdated knowledge
+		self.memberKnowledge = list(filter(lambda x: x.id != knowledge.id, self.memberKnowledge))
+		self.memberKnowledge.append(knowledge)
 
 	def fitness(self):
 		return self.fitness_of(self.memberKnowledge)
