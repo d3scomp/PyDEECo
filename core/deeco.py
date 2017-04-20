@@ -170,6 +170,9 @@ class EnsembleInstance:
 		self.definition = definition
 		self.memberKnowledge = []
 
+	def id(self):
+		return hash(map(lambda x: x.id, self.memberKnowledge))
+
 	def contains(self, component_id: int):
 		return component_id in map(lambda x: x.id, self.memberKnowledge)
 
