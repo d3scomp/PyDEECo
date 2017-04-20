@@ -4,7 +4,7 @@ from robot import Robot
 
 class RobotGroup(EnsembleDefinition):
 	def fitness(self, a: Robot.Knowledge, b: Robot.Knowledge):
-		return a.position.dist_to(b.position)
+		return 1 / a.position.dist_to(b.position)
 
 	def membership(self, a: Robot, b: Robot):
 		assert type(a) == Robot
