@@ -17,6 +17,9 @@ class Packet:
 	def __init__(self, type: PacketType):
 		self.type = type
 
+	def __str__(self):
+		return self.__class__.__name__
+
 
 class TimestampedPacket(Packet):
 	def __init__(self, type: PacketType, time_ms: int):

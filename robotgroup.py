@@ -3,8 +3,8 @@ from robot import Robot
 
 
 class RobotGroup(EnsembleDefinition):
-	def fitness(self, *components):
-		pass
+	def fitness(self, a: Robot.Knowledge, b: Robot.Knowledge):
+		return a.position.dist_to(b.position)
 
 	def membership(self, a: Robot, b: Robot):
 		assert type(a) == Robot
@@ -12,4 +12,7 @@ class RobotGroup(EnsembleDefinition):
 		return True
 
 	def knowledge(self, *components):
-		pass
+		raise "TODO: Knowledge not defined"
+
+	def __str__(self):
+		return self.__class__.__name__

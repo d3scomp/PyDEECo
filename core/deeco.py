@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from core.runnable import *
 from core.packets import KnowledgePacket
 
@@ -147,12 +149,15 @@ class ShadowKnowledge:
 
 
 class EnsembleDefinition:
+	@abstractmethod
 	def fitness(self, *knowledge):
 		pass
 
+	@abstractmethod
 	def membership(self, *knowledge):
 		pass
 
+	@abstractmethod
 	def knowledge(self, *knowledge):
 		pass
 
@@ -166,19 +171,35 @@ class EnsembleInstance:
 		return component_id in map(lambda x: x.id, self.memberKnowledge)
 
 	def fitness(self):
-		self.definition.fitness(self.memberKnowledge)
+		return self.fitness_of(self.memberKnowledge)
+
+	def fitness_of(self, member_knowledge):
+		try:
+			return self.definition.fitness(*member_knowledge)
+		except TypeError:
+			return 0
+
+	def membership_of(self, member_knowledge):
+		try:
+			return self.definition.membership(*member_knowledge)
+		except TypeError:
+			return False
+
+	def membership(self):
+		return self.membership_of(self.memberKnowledge)
 
 	def knowledge(self):
 		self.definition.knowledge(self.memberKnowledge)
 
 	def add_impact(self, knowledge: ShadowKnowledge):
-		# TODO: calculate fitness change when knowledge si added
-		return 42
+		new_members = self.memberKnowledge + [knowledge]
+		new_fitness = self.fitness_of(new_members)
+		old_fitness = self.fitness()
+		return new_fitness - old_fitness
 
 	def remove_impact(self, knowledge: ShadowKnowledge):
-		# TODO: calculate fitness change when knowledge si removed
-		return -42
+		new_members = filter(lambda x: x.id != knowledge.id, self.memberKnowledge)
+		return self.definition.fitness(new_members) - self.fitness()
 
-	def replace_impact(self, knowledge: ShadowKnowledge):
-		# TODO: calculate fitness change when knowledge si replaced
-		return 0
+	def replace_impact(self, added_knowledge: ShadowKnowledge, removed_knowledge: ShadowKnowledge):
+		return self.add_impact(added_knowledge) + self.remove_impact(removed_knowledge)
