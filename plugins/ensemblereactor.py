@@ -64,7 +64,7 @@ class EnsembleReactor(NodePlugin):
 		scheduler.set_periodic_timer(self.react, period_ms=1000)
 
 	def react(self, time_ms):
-		print("Reactor invoked, sending demands and assignments")
+		#print("Reactor invoked, sending demands and assignments")
 
 		for component_id, demand in self.demands.items():
 			packet = DemandPacket(time_ms, demand.component_id, self.node.id, demand.fitness_difference)
@@ -114,7 +114,7 @@ class EnsembleReactor(NodePlugin):
 		if demand.component_id not in map(lambda x: x.id, self.node.get_components()):
 			return
 
-		print("Reactor processing demand packet")
+		#print("Reactor processing demand packet")
 
 		assignment = self.node.get_component_by_id(demand.component_id).knowledge.assignment
 
