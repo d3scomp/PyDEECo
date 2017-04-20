@@ -104,9 +104,7 @@ class EnsembleReactor(NodePlugin):
 		return fitness_upgrade or (fitness_clash and id_superior)
 
 	def create_demand(self, knowledge_packet: KnowledgePacket):
-		# TODO: Try to improve existing ensemble instance
-
-		# TODO: Do not create demand when fitness not better
+		# TODO: Try to improve/keep existing ensemble instance
 
 		# Remove old demand for particular component
 		if knowledge_packet.id in self.demands:
