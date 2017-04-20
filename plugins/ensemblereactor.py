@@ -108,6 +108,10 @@ class EnsembleReactor(NodePlugin):
 
 		# TODO: Do not create demand when fitness not better
 
+		# Remove old demand for particular component
+		if knowledge_packet.id in self.demands:
+			del self.demands[knowledge_packet.id]
+
 		# Build new ensemble instance if possible
 		for definition in self.definitions:
 			instance = EnsembleInstance(definition)
@@ -157,6 +161,10 @@ class EnsembleReactor(NodePlugin):
 			if instance.contains(assignment.component_id):
 				# TODO: Record assignment timestamps
 				return
+
+		# We received assignment for non existent demand
+		if knowledge_packet.id not in self.demands:
+			return
 
 		# Process according to demand
 		demand = self.demands[knowledge_packet.id]
