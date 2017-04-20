@@ -214,3 +214,6 @@ class EnsembleInstance:
 
 	def replace_impact(self, added_knowledge: ShadowKnowledge, removed_knowledge: ShadowKnowledge):
 		return self.add_impact(added_knowledge) + self.remove_impact(removed_knowledge)
+
+	def __str__(self):
+		return self.__class__.__name__ + " of " + str(self.definition) + " with id " + str(self.id())
