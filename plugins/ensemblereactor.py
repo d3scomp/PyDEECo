@@ -96,6 +96,13 @@ class EnsembleReactor(NodePlugin):
 			# Not assigned to us, lets create demand
 			self.create_demand(knowledge_packet)
 
+	@staticmethod
+	def evaluate_assignment(current_impact: float, current_node_id: int, new_impact: float, new_node_id: int):
+		fitness_upgrade = new_impact > current_impact
+		fitness_clash = new_impact == current_impact
+		id_superior = current_node_id is None or new_node_id < current_node_id
+		return fitness_upgrade or (fitness_clash and id_superior)
+
 	def create_demand(self, knowledge_packet: KnowledgePacket):
 		# TODO: Try to improve existing ensemble instance
 
@@ -105,7 +112,11 @@ class EnsembleReactor(NodePlugin):
 		for definition in self.definitions:
 			instance = EnsembleInstance(definition)
 			impact = instance.add_impact(knowledge_packet.knowledge)
-			if impact >= 0:
+			if self.evaluate_assignment(
+					knowledge_packet.knowledge.assignment.fitness_gain,
+					knowledge_packet.knowledge.assignment.node_id,
+					impact,
+					self.node.id):
 				print("Demanding to create new ensemble instance, add impact: " + str(impact))
 				demand = DemandRecord(knowledge_packet.id, impact, definition)
 				self.demands[knowledge_packet.id] = demand
@@ -124,10 +135,7 @@ class EnsembleReactor(NodePlugin):
 			return
 
 		# Re-assign component
-		fitness_upgrade = demand.fitness_difference > assignment.fitness_gain
-		fitness_clash = demand.fitness_difference == assignment.fitness_gain
-		id_superior = demand.node_id < assignment.node_id
-		if fitness_upgrade or (fitness_clash and id_superior):
+		if self.evaluate_assignment(demand.fitness_difference, demand.node_id, assignment.fitness_gain, assignment.node_id):
 			self.assign(demand.component_id, demand.node_id, demand.fitness_difference)
 			return
 
