@@ -104,11 +104,27 @@ class EnsembleReactor(NodePlugin):
 		return fitness_upgrade or (fitness_clash and id_superior)
 
 	def create_demand(self, knowledge_packet: KnowledgePacket):
-		# TODO: Try to improve/keep existing ensemble instance
+		# TODO: Create more demand per component
+		# Demand new ensemble creation (if no ensemble with fitness > 0 is present)
+		# Demand add to ensemble (if possible)
+		# Demand all moves between local ensembles (if fitness gain can be achieved)
 
 		# Remove old demand for particular component
 		if knowledge_packet.id in self.demands:
 			del self.demands[knowledge_packet.id]
+
+		# Try to demand ensemble upgrade
+		for instance in self.instances:
+			impact = instance.add_impact(knowledge_packet.knowledge)
+			if self.evaluate_assignment(
+					knowledge_packet.knowledge.assignment.fitness_gain,
+					knowledge_packet.knowledge.assignment.node_id,
+					impact,
+					self.node.id):
+				print("Demanding to upgrade ensemble instance, add impact: " + str(impact))
+				demand = DemandRecord(knowledge_packet.id, impact, instance)
+				self.demands[knowledge_packet.id] = demand
+				return
 
 		# Build new ensemble instance if possible
 		for definition in self.definitions:
@@ -122,11 +138,13 @@ class EnsembleReactor(NodePlugin):
 				print("Demanding to create new ensemble instance, add impact: " + str(impact))
 				demand = DemandRecord(knowledge_packet.id, impact, definition)
 				self.demands[knowledge_packet.id] = demand
+				return
 
 		# Create demand for existing local ensemble instance
 		for instance in filter(lambda x: x.contains(knowledge_packet.id), self.instances):
 			demand = DemandRecord(knowledge_packet.id, knowledge_packet.knowledge.assignment.fitness_gain, instance)
 			self.demands[knowledge_packet.id] = demand
+			return
 
 	def process_demand(self, demand: DemandPacket):
 		if demand.component_id not in map(lambda x: x.id, self.node.get_components()):
