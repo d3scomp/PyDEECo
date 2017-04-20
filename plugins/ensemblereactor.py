@@ -123,6 +123,11 @@ class EnsembleReactor(NodePlugin):
 				demand = DemandRecord(knowledge_packet.id, impact, definition)
 				self.demands[knowledge_packet.id] = demand
 
+		# Create demand for existing local ensemble instance
+		for instance in filter(lambda x: x.contains(knowledge_packet.id), self.instances):
+			demand = DemandRecord(knowledge_packet.id, knowledge_packet.knowledge.assignment.fitness_gain, instance)
+			self.demands[knowledge_packet.id] = demand
+
 	def process_demand(self, demand: DemandPacket):
 		if demand.component_id not in map(lambda x: x.id, self.node.get_components()):
 			return
