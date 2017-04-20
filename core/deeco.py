@@ -189,7 +189,7 @@ class EnsembleInstance:
 		return self.membership_of(self.memberKnowledge)
 
 	def knowledge(self):
-		self.definition.knowledge(self.memberKnowledge)
+		return self.definition.knowledge(self.memberKnowledge)
 
 	def add_impact(self, knowledge: ShadowKnowledge):
 		new_members = self.memberKnowledge + [knowledge]
