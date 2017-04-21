@@ -118,35 +118,6 @@ class Component:
 		self.knowledge.id = self.id
 		self.metadata = Metadata()
 
-#
-# class Ensemble:
-# 	def membership(self):
-# 		pass
-#
-# 	def fitness(self):
-# 		pass
-#
-# 	def exchange(self):
-# 		pass
-
-
-class ShadowKnowledge:
-	def __init__(self, packet: KnowledgePacket):
-		self.__init__(packet.id)
-		self.timestamp = packet.timestamp_ms
-		self.knowledge = packet.knowledge
-
-	# TODO: Unused ?
-	def __init__(self, component_id: int):
-		self.id = component_id
-		self.timestamp = 0
-		self.knowledge = None
-
-	def update(self, knowledge: Component.Knowledge, time):
-		if self.timestamp < time:
-			self.knowledge = knowledge
-			self.timestamp = time
-
 
 class EnsembleDefinition:
 	class Knowledge:
@@ -205,17 +176,17 @@ class EnsembleInstance:
 	def knowledge(self):
 		return self.definition.knowledge(*self.memberKnowledge)
 
-	def add_impact(self, knowledge: ShadowKnowledge):
+	def add_impact(self, knowledge):
 		new_members = self.memberKnowledge + [knowledge]
 		new_fitness = self.fitness_of(new_members)
 		old_fitness = self.fitness()
 		return new_fitness - old_fitness
 
-	def remove_impact(self, knowledge: ShadowKnowledge):
+	def remove_impact(self, knowledge):
 		new_members = filter(lambda x: x.id != knowledge.id, self.memberKnowledge)
 		return self.definition.fitness(new_members) - self.fitness()
 
-	def replace_impact(self, added_knowledge: ShadowKnowledge, removed_knowledge: ShadowKnowledge):
+	def replace_impact(self, added_knowledge, removed_knowledge):
 		return self.add_impact(added_knowledge) + self.remove_impact(removed_knowledge)
 
 	def __str__(self):
