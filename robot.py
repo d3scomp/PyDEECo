@@ -42,15 +42,15 @@ class Robot(Component):
 		self.knowledge.goal = self.gen_position()
 		self.knowledge.color = self.random.choice(self.COLORS)
 
-		# Register network receive method
-		node.networkDevice.add_receiver(self.__receive_packet)
+#		# Register network receive method
+#		node.networkDevice.add_receiver(self.__receive_packet)
 
 		node.position = self.knowledge.position
 
 		print("Robot " + str(self.knowledge.id) + " created")
 
-	def __receive_packet(self, packet):
-		print((str(self.knowledge.time) + " ms: " + str(self.knowledge.id) + " Received packet: " + str(packet)))
+#	def __receive_packet(self, packet):
+#		print((str(self.knowledge.time) + " ms: " + str(self.knowledge.id) + " Received packet: " + str(packet)))
 
 	# Processes follow
 
@@ -74,7 +74,7 @@ class Robot(Component):
 			node.walker.set_target(self.knowledge.goal)
 		node.walker.set_target(self.knowledge.goal)
 
-	@process(period_ms=2500)
-	def send_echo_packet(self, node: Node):
-		node.networkDevice.send(node.id, TextPacket("Echo packet payload from: " + str(self.knowledge.id)))
-		node.networkDevice.broadcast(TextPacket("Broadcast echo packet payload from: " + str(self.knowledge.id)))
+#	@process(period_ms=2500)
+#	def send_echo_packet(self, node: Node):
+#		node.networkDevice.send(node.id, TextPacket("Echo packet payload from: " + str(self.knowledge.id)))
+#		node.networkDevice.broadcast(TextPacket("Broadcast echo packet payload from: " + str(self.knowledge.id)))
