@@ -149,6 +149,9 @@ class ShadowKnowledge:
 
 
 class EnsembleDefinition:
+	class Knowledge:
+		pass
+
 	@abstractmethod
 	def fitness(self, *knowledge):
 		pass

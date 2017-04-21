@@ -30,5 +30,16 @@ class Position:
 	def dist_to(self, other):
 		return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
 
+	@staticmethod
+	def average(*other):
+		x = 0
+		y = 0
+
+		for position in other:
+			x += position.x
+			y += position.y
+
+		return Position(x / len(other), y / len(other))
+
 	def length(self):
 		return math.sqrt(self.x**2 + self.y**2)
