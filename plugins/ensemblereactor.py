@@ -8,6 +8,7 @@ from core.packets import KnowledgePacket
 from core.packets import PacketType
 from core.packets import DemandPacket
 from core.packets import AssignmentPacket
+import pprint
 
 
 class ShadowRepository:
@@ -72,8 +73,16 @@ class EnsembleReactor(NodePlugin):
 
 		# TODO: Maintain ensembles check timestamps
 
+		self.run_ensembles()
+
 		for instance in self.instances:
 			print("### Node " + str(self.node.id) + " ensemble instance " + str(instance) + " with components: " + str(list(map(lambda x: x.id, instance.memberKnowledge))))
+
+	def run_ensembles(self):
+		for instance in self.instances:
+			if instance.membership():
+				knowledge = instance.knowledge()
+				print("### Active instance: " + str(instance) + " : " + str(knowledge))
 
 	def receive(self, packet: Packet):
 		if packet.type == PacketType.KNOWLEDGE:
