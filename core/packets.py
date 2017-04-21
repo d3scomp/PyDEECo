@@ -28,10 +28,10 @@ class TimestampedPacket(Packet):
 
 
 class KnowledgePacket(TimestampedPacket):
-	def __init__(self, component, time_ms: int):
+	def __init__(self, id: int, knowledge, time_ms: int):
 		super().__init__(PacketType.KNOWLEDGE, time_ms)
-		self.id = component.id
-		self.knowledge = deepcopy(component.knowledge)
+		self.id = id
+		self.knowledge = deepcopy(knowledge)
 
 
 class TextPacket(Packet):
