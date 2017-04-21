@@ -73,16 +73,19 @@ class EnsembleReactor(NodePlugin):
 
 		# TODO: Maintain ensembles check timestamps
 
-		self.run_ensembles()
+		self.run_ensembles(time_ms)
 
 		for instance in self.instances:
 			print("### Node " + str(self.node.id) + " ensemble instance " + str(instance) + " with components: " + str(list(map(lambda x: x.id, instance.memberKnowledge))))
 
-	def run_ensembles(self):
+	def run_ensembles(self, time_ms: int):
 		for instance in self.instances:
 			if instance.membership():
 				knowledge = instance.knowledge()
+				knowledge.assignment = AssignmentRecord(None, 0)
 				print("### Active instance: " + str(instance) + " : " + str(knowledge))
+				packet = KnowledgePacket(instance.id(), knowledge, time_ms)
+				self.node.networkDevice.broadcast(packet)
 
 	def receive(self, packet: Packet):
 		if packet.type == PacketType.KNOWLEDGE:

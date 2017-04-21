@@ -190,7 +190,7 @@ class EnsembleInstance:
 	def fitness_of(self, member_knowledge):
 		try:
 			return self.definition.fitness(*member_knowledge)
-		except TypeError:
+		except (TypeError, AttributeError):
 			return 0
 
 	def membership_of(self, member_knowledge):
