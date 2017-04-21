@@ -1,15 +1,21 @@
+from abc import abstractmethod
+
+
 class Runnable:
 	def run(self, scheduler):
 		pass
 
 
 class Runtime:
+	@abstractmethod
 	def add_runnable(self, runnable: Runnable):
 		pass
 
+	@abstractmethod
 	def add_plugin(self, plugin):
 		pass
 
+	@abstractmethod
 	def get_scheduler(self):
 		pass
 
