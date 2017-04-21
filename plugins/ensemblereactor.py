@@ -7,8 +7,6 @@ from core.packets import Packet
 from core.packets import KnowledgePacket
 from core.packets import PacketType
 from core.packets import DemandPacket
-from core.packets import AssignmentPacket
-import pprint
 
 
 class ShadowRepository:
@@ -88,14 +86,11 @@ class EnsembleReactor(NodePlugin):
 				self.node.networkDevice.broadcast(packet)
 
 	def receive(self, packet: Packet):
-		if packet.type == PacketType.KNOWLEDGE:
+		if packet.type == PacketType.KNOWLEDGE and isinstance(packet, KnowledgePacket):
 			self.process_knowledge(packet)
 
-		if packet.type == PacketType.DEMAND:
+		if packet.type == PacketType.DEMAND and isinstance(packet, DemandPacket):
 			self.process_demand(packet)
-
-		if packet.type == PacketType.ASSIGNMENT:
-			self.process_assignment(packet)
 
 	def process_knowledge(self, knowledge_packet: KnowledgePacket):
 #		print("Reactor processing knowledge packet")
