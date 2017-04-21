@@ -72,6 +72,9 @@ class EnsembleReactor(NodePlugin):
 
 		# TODO: Maintain ensembles check timestamps
 
+		for instance in self.instances:
+			print("### Node " + str(self.node.id) + " ensemble instance " + str(instance) + " with components: " + str(list(map(lambda x: x.id, instance.memberKnowledge))))
+
 	def receive(self, packet: Packet):
 		if packet.type == PacketType.KNOWLEDGE:
 			self.process_knowledge(packet)
