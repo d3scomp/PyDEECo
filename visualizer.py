@@ -6,6 +6,7 @@ from matplotlib.figure import Figure
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
+from core.deeco import Node
 
 from core import simloader
 from core.deeco import BaseKnowledge
