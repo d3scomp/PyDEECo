@@ -16,7 +16,7 @@ print("Running simulation")
 sim = Sim()
 
 # Add snapshoter plugin
-Snapshoter(sim)
+Snapshoter(sim, period_ms=100)
 
 # Add identity replicas plugin (provides replicas using deep copies of original knowledge)
 IdentityReplicas(sim)
