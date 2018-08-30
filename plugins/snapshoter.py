@@ -26,6 +26,6 @@ class Snapshoter(SimPlugin):
 		# Snapshot the system
 		if self.snapshot_dir is not None:
 			log = open(self.snapshot_dir + os.sep + str(time_ms) + ".json", "w")
-			dump = json.encode(self.sim)
+			dump = json.encode({"time_ms": time_ms, "nodes": self.sim.nodes}, unpicklable=False)
 			log.write(dump)
 			log.close()

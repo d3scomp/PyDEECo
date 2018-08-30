@@ -9,13 +9,14 @@ from plugins.ensemblereactor import EnsembleReactor
 
 from robot import Robot
 from robotgroup import RobotGroup
+from plugins.snapshoter import Snapshoter
 
 print("Running simulation")
 
 sim = Sim()
 
 # Add snapshoter plugin
-#Snapshoter(sim)
+Snapshoter(sim)
 
 # Add identity replicas plugin (provides replicas using deep copies of original knowledge)
 IdentityReplicas(sim)

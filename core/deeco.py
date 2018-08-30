@@ -3,7 +3,6 @@ from abc import abstractmethod
 from core.runnable import *
 from core.packets import KnowledgePacket
 
-
 class Node(Runnable):
 	counter = 0
 
@@ -25,6 +24,9 @@ class Node(Runnable):
 		# Deploy system plugins on node
 		for plugin in runtime.plugins:
 			plugin.attach_to(self)
+
+	def __getstate__(self):
+		return {"id": self.id, "components": self.components}
 
 	def add_component(self, component):
 		self.components.append(component)

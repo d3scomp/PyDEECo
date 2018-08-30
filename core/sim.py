@@ -77,7 +77,6 @@ class Sim(Runtime):
 
 		self.nodes = []
 		self.plugins = []
-		self.time = 0
 
 	def add_plugin(self, plugin: SimPlugin):
 		self.plugins.append(plugin)

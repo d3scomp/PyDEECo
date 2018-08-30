@@ -23,12 +23,10 @@ def load(logDir):
 	for record in records:
 		record_file = open(record, "r")
 		dump = record_file.read()
-		sim = json.decode(dump)
-
+		sim = json.loads(dump)
 		log.append(sim)
-	# log[root.time] = root
 
-	log.sort(key=lambda x: x.time)
+	log.sort(key=lambda x: x['time_ms'])
 
 	print("Loading logs...done")
 

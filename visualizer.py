@@ -36,25 +36,28 @@ class PlottingCanvas(FigureCanvas):
 		self.plot.clear()
 		self.plot_record(rec)
 
-		self.plot.set_title("Time: " + str(rec.time) + " ms")
+		self.plot.set_title("Time: " + str(rec['time_ms']) + " ms")
 		self.plot.set_xlim(0, 1)
 		self.plot.set_ylim(0, 1)
 
 	def plot_record(self, rec: Sim):
-		for node in rec.nodes:
+		for node in rec['nodes']:
 			self.plot_node(node)
 
 	def plot_node(self, node: Node):
-		for component in node.components:
-			self.plot_component(component.knowledge)
+		try:
+			for component in node['components']:
+				self.plot_component(component['knowledge'])
+		except:
+			print("Failed to plot node")
 
 	def plot_component(self, knowledge: BaseKnowledge):
-		if knowledge.color == "red":
-			self.plot.plot(knowledge.position.x, knowledge.position.y, "r^")
-		elif knowledge.color == "green":
-			self.plot.plot(knowledge.position.x, knowledge.position.y, "g^")
-		elif knowledge.color == "blue":
-			self.plot.plot(knowledge.position.x, knowledge.position.y, "b^")
+		if knowledge['color'] == "red":
+			self.plot.plot(knowledge['position']['x'], knowledge['position']['y'], "r^")
+		elif knowledge['color'] == "green":
+			self.plot.plot(knowledge['position']['x'], knowledge['position']['y'], "g^")
+		elif knowledge['color'] == "blue":
+			self.plot.plot(knowledge['position']['x'], knowledge['position']['y'], "b^")
 
 	def update_plot(self, recNum):
 		self.draw_plot(recNum)
@@ -83,10 +86,14 @@ class Visualizer(QWidget):
 
 
 app = QApplication(sys.argv)
+
+#logDir = "C:\\Users\\vlada\\PyDEECo\\logs"
+
 dirChooser = QFileDialog()
 dirChooser.setFileMode(QFileDialog.DirectoryOnly)
-if dirChooser.exec_() == QDialog.Accepted:
+if dirChooser.exec_() == QDialog.Accepted:#
 	logDir = dirChooser.selectedFiles()[0]
+
 else:
 	raise (Exception("log dir must be chosen"))
 
